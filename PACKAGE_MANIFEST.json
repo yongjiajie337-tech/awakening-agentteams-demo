@@ -101,12 +101,12 @@
     {
       "path": "CHANGELOG.md",
       "size_bytes": 3836,
-      "sha256": "d7d8fd3cf5eb35fb58f835855dbbbfcdc3dbd627833297f46ef1c6944da093a6"
+      "sha256": "cb4234fac26b4e2001ee41d5656346f405f3909e315cd9c3d1df6c16abac446c"
     },
     {
       "path": "CITATION.cff",
       "size_bytes": 1057,
-      "sha256": "c086d5d61e5c24a4bc6c9bd9f7777abb571b82a35f67b9f1f019640ec4dd415f"
+      "sha256": "da4a5607e8072e4c369d4b9f2630cfa3ec830b3d0b38d1bca5651d30cf2ee6aa"
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -370,8 +370,8 @@
     },
     {
       "path": "NOTICE.md",
-      "size_bytes": 3405,
-      "sha256": "5493f7c779f4b457c561729f72533917e8010f8a881b45587d37583108ce50f9"
+      "size_bytes": 3403,
+      "sha256": "357ee6f3d4c7f2c27906be0912c7b3eeea76b6b4cf79cdef8c7b9dfb05091221"
     },
     {
       "path": "pyproject.toml",
@@ -385,13 +385,13 @@
     },
     {
       "path": "README.en.md",
-      "size_bytes": 12100,
-      "sha256": "a11ca3435238999b924f582a83323154d732190e223757a310dd61b0dd8c0b59"
+      "size_bytes": 12391,
+      "sha256": "14f587a18ffb38f3f47712888779575e39f2d7810e6ac4d265ab4f042f6d2a7d"
     },
     {
       "path": "README.md",
-      "size_bytes": 17544,
-      "sha256": "c3a57c8952af39f8877c17a5b5c0de6fcf8cc11a3be8eb70c09fff6a8e79573a"
+      "size_bytes": 17776,
+      "sha256": "db2e7836e40de72fb4f77f95247555efb591226d8ec6bb12ea7be5b8cfcd3d9a"
     },
     {
       "path": "requirements-demo.lock",

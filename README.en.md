@@ -2,7 +2,7 @@
 
 [中文说明](README.md) · [English](README.en.md) · [Contributing](CONTRIBUTING.md) · [Support](SUPPORT.md) · [Security Policy](SECURITY.md)
 
-[GitHub repository](https://github.com/yongjiajie337-tech/awakening-agentteams-demo) · [stable baseline v1.0.2](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2) · [changelog](CHANGELOG.md)
+[GitHub repository](https://github.com/yongjiajie337-tech/awakening-agentteams-demo) · [stable open-source release v1.0.3](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.3) · [immutable competition baseline v1.0.2](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2) · [changelog](CHANGELOG.md)
 
 Awakening AgentTeams Demo is an open-source, dual-layer review package for a real `1 Manager + 3 Worker` AgentTeams flow. It separates two different claims:
 
@@ -26,7 +26,7 @@ The scenario is a fictional job-seeker evidence workflow. The Architect identifi
 | Cost | Locally calculated from recorded tokens and fixed prices; not independently reconciled against a remote Provider bill |
 | Reproduction | Offline verification is independent; live reproduction requires a prepared AgentTeams v1.1.2-compatible reference environment |
 
-The immutable competition baseline is Git tag [`v1.0.2`](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2). Work listed as `Unreleased` is not a stable release until it is verified, merged, and tagged.
+The current stable open-source release is Git tag [`v1.0.3`](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.3). Git tag [`v1.0.2`](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2) remains the immutable competition-evidence baseline. Future work listed as `Unreleased` is not a stable release until it is verified, merged, and tagged.
 
 ## Architecture at a glance
 

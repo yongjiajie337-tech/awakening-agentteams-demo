@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.3 - Unreleased
+## 1.0.3 - 2026-08-16
 
 - Added a Chinese-first GitHub landing page and a substantive English entry
   that state the real `1 Manager + 3 Worker` topology, deterministic Manager,

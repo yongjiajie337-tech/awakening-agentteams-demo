@@ -2,7 +2,7 @@
 
 [中文说明](README.md) · [English](README.en.md) · [贡献指南](CONTRIBUTING.md) · [获取帮助](SUPPORT.md) · [安全政策](SECURITY.md)
 
-[GitHub 仓库](https://github.com/yongjiajie337-tech/awakening-agentteams-demo) · [稳定基线 v1.0.2](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2) · [更新记录](CHANGELOG.md)
+[GitHub 仓库](https://github.com/yongjiajie337-tech/awakening-agentteams-demo) · [稳定开源版本 v1.0.3](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.3) · [不可变比赛基线 v1.0.2](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2) · [更新记录](CHANGELOG.md)
 
 这是 Awakening 的 AgentTeams 开源 Demo，也是面向赛事初赛评审的 **双层评审包**。它把“无需真实调用即可检查的代码与证据”和“需要兼容参考环境才能再次触发的真实多 Agent 流程”明确分开。
 
@@ -27,7 +27,7 @@
 | 费用 | 只提供按记录 token 与固定单价计算的本地结果；没有用远端账单独立核验 |
 | 复现 | 离线核验可独立运行；实时流程需要已准备好的 AgentTeams v1.1.2 兼容参考环境 |
 
-当前稳定、不可变的比赛包基线是 Git 标签 [`v1.0.2`](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2)。后续开源改进先进入开发分支和 `Unreleased` 更新记录，只有完成核验、合并并创建新标签后才成为新的稳定发布。
+当前稳定开源版本是 Git 标签 [`v1.0.3`](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.3)。[`v1.0.2`](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2) 继续作为不可变的比赛证据基线保留；后续改进仍须先进入开发分支和 `Unreleased` 更新记录，完成核验、合并并创建新标签后才成为新的稳定发布。
 
 ## 评委从哪里开始
 
