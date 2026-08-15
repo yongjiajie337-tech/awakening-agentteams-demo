@@ -54,7 +54,7 @@ $dockerCompose = Join-Path $env:LOCALAPPDATA "Programs\DockerDesktop\resources\b
 $dockerConfig = Join-Path $workspace "tmp\m4\docker-config-anonymous"
 $coreCli = Join-Path $workspace "scripts\demo\agentteams_in_place_demo.py"
 $matrixControlSource = Join-Path $workspace "infra\agentteams\demo\runtime\demo-matrix-control.sh"
-$m5Secret = Join-Path $workspace ".env.m5.provider"
+$demoProviderSecret = Join-Path $workspace ".secrets\demo-provider.env"
 $m4ProviderSecret = Join-Path $workspace ".env.m4.provider"
 $curl = Join-Path $env:SystemRoot "System32\curl.exe"
 $demoProviderHostname = "dashscope.aliyuncs.com"
@@ -150,6 +150,180 @@ function Assert-RegularDirectory {
         throw $Reason
     }
     return $resolved
+}
+
+function Get-DemoNormalizedFileRights {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Security.Principal.SecurityIdentifier]$Sid,
+
+        [Parameter(Mandatory = $true)]
+        [System.Security.AccessControl.FileSystemRights]$Rights
+    )
+
+    $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $Sid,
+        $Rights,
+        [System.Security.AccessControl.InheritanceFlags]::None,
+        [System.Security.AccessControl.PropagationFlags]::None,
+        [System.Security.AccessControl.AccessControlType]::Allow
+    )
+    return [int64]$rule.FileSystemRights
+}
+
+function Assert-DemoProviderSecretAcl {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)]
+        [System.Security.Principal.SecurityIdentifier]$CurrentUserSid,
+        [switch]$Directory
+    )
+
+    $systemSid = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-18")
+    $administratorsSid = New-Object System.Security.Principal.SecurityIdentifier(
+        "S-1-5-32-544"
+    )
+    $required = @{}
+    foreach ($sid in @($CurrentUserSid, $systemSid, $administratorsSid)) {
+        $required.Add(
+            $sid.Value,
+            (Get-DemoNormalizedFileRights -Sid $sid -Rights (
+                [System.Security.AccessControl.FileSystemRights]::FullControl
+            ))
+        )
+    }
+    if ($required.Count -ne 3) {
+        throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+    }
+
+    $broadSids = @(
+        "S-1-1-0",       # Everyone
+        "S-1-5-7",       # Anonymous
+        "S-1-5-11",      # Authenticated Users
+        "S-1-5-32-545",  # BUILTIN\Users
+        "S-1-5-32-546"   # BUILTIN\Guests
+    )
+    $extraReaderRights = Get-DemoNormalizedFileRights -Sid $systemSid -Rights (
+        [System.Security.AccessControl.FileSystemRights]::Read -bor
+        [System.Security.AccessControl.FileSystemRights]::Synchronize
+    )
+    $readDataRight = [int64][System.Security.AccessControl.FileSystemRights]::ReadData
+
+    try {
+        $sections = (
+            [System.Security.AccessControl.AccessControlSections]::Access -bor
+            [System.Security.AccessControl.AccessControlSections]::Owner
+        )
+        $acl = if ($Directory) {
+            [IO.Directory]::GetAccessControl($Path, $sections)
+        }
+        else {
+            [IO.File]::GetAccessControl($Path, $sections)
+        }
+        $owner = $acl.GetOwner([System.Security.Principal.SecurityIdentifier])
+        $rules = @($acl.GetAccessRules(
+            $true,
+            $true,
+            [System.Security.Principal.SecurityIdentifier]
+        ) | ForEach-Object { $_ })
+    }
+    catch {
+        throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+    }
+    if (-not $acl.AreAccessRulesProtected -or
+        $owner.Value -cne $CurrentUserSid.Value -or
+        $rules.Count -notin @(3, 4)) {
+        throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+    }
+
+    $seenRequired = @{}
+    $restrictedReaderCount = 0
+    foreach ($rule in $rules) {
+        try {
+            $sid = $rule.IdentityReference.Translate(
+                [System.Security.Principal.SecurityIdentifier]
+            )
+            [void](New-Object System.Security.Principal.SecurityIdentifier($sid.Value))
+        }
+        catch {
+            throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+        }
+        $allowedInheritance = @(
+            [System.Security.AccessControl.InheritanceFlags]::None
+        )
+        if ($Directory) {
+            $allowedInheritance += (
+                [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor
+                [System.Security.AccessControl.InheritanceFlags]::ObjectInherit
+            )
+        }
+        if ($rule.IsInherited -or
+            $rule.AccessControlType -ne
+                [System.Security.AccessControl.AccessControlType]::Allow -or
+            $rule.InheritanceFlags -notin $allowedInheritance -or
+            $rule.PropagationFlags -ne
+                [System.Security.AccessControl.PropagationFlags]::None -or
+            $broadSids -contains $sid.Value) {
+            throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+        }
+
+        $actualRights = [int64]$rule.FileSystemRights
+        if ($required.ContainsKey($sid.Value)) {
+            if ($seenRequired.ContainsKey($sid.Value) -or
+                $actualRights -ne [int64]$required[$sid.Value]) {
+                throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+            }
+            $seenRequired.Add($sid.Value, $true)
+            continue
+        }
+
+        $restrictedReaderCount++
+        if ($restrictedReaderCount -gt 1 -or
+            ($actualRights -band $readDataRight) -eq 0 -or
+            ($actualRights -band $extraReaderRights) -ne $actualRights) {
+            throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+        }
+    }
+    if ($seenRequired.Count -ne 3) {
+        throw "DEMO_PROVIDER_SECRET_ACL_METADATA_INVALID"
+    }
+    return [pscustomobject]@{
+        rule_count = $rules.Count
+        restricted_reader_count = $restrictedReaderCount
+        owner_is_current_user = $true
+        explicit_allow_only = $true
+    }
+}
+
+function Assert-DemoProviderSecretDirectory {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][string]$ExpectedPath,
+        [Parameter(Mandatory = $true)]
+        [System.Security.Principal.SecurityIdentifier]$CurrentUserSid
+    )
+
+    try {
+        $candidate = [IO.Path]::GetFullPath($Path)
+        $expected = [IO.Path]::GetFullPath($ExpectedPath)
+        if (-not [StringComparer]::OrdinalIgnoreCase.Equals($candidate, $expected)) {
+            throw "DEMO_PROVIDER_SECRET_PARENT_DIRECTORY_INVALID"
+        }
+        $resolved = Assert-RegularDirectory -Path $candidate `
+            -Reason "DEMO_PROVIDER_SECRET_PARENT_DIRECTORY_INVALID"
+        $acl = Assert-DemoProviderSecretAcl -Path $resolved `
+            -CurrentUserSid $CurrentUserSid -Directory
+    }
+    catch {
+        throw "DEMO_PROVIDER_SECRET_PARENT_DIRECTORY_INVALID"
+    }
+    return [pscustomobject]@{
+        path = $resolved
+        acl_rule_count = [int]$acl.rule_count
+        restricted_reader_count = [int]$acl.restricted_reader_count
+        acl_owner_is_current_user = [bool]$acl.owner_is_current_user
+        acl_explicit_allow_only = [bool]$acl.explicit_allow_only
+    }
 }
 
 function Assert-DemoHostRelayHelper {
@@ -3033,21 +3207,24 @@ function Invoke-Preflight {
         throw "DEMO_M4_PROVIDER_SECRET_MUST_REMAIN_ABSENT"
     }
 
-    $secretPath = Assert-RegularFile -Path $m5Secret -Reason "DEMO_M5_SECRET_METADATA_INVALID"
+    $currentUserSid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User
+    $secretDirectoryProjection = Assert-DemoProviderSecretDirectory `
+        -Path (Split-Path -Parent $demoProviderSecret) `
+        -ExpectedPath (Join-Path $workspace ".secrets") `
+        -CurrentUserSid $currentUserSid
+    $secretPath = Assert-RegularFile -Path $demoProviderSecret `
+        -Reason "DEMO_PROVIDER_SECRET_METADATA_INVALID"
     $secretItem = Get-Item -LiteralPath $secretPath -Force -ErrorAction Stop
-    $secretAcl = Get-Acl -LiteralPath $secretPath -ErrorAction Stop
-    if (-not $secretAcl.AreAccessRulesProtected -or @($secretAcl.Access).Count -ne 4 -or
-        [string]::IsNullOrWhiteSpace([string]$secretAcl.Owner)) {
-        throw "DEMO_M5_SECRET_ACL_METADATA_INVALID"
-    }
+    $secretAclProjection = Assert-DemoProviderSecretAcl -Path $secretPath `
+        -CurrentUserSid $currentUserSid
     $streams = @(Get-Item -LiteralPath $secretPath -Stream * -ErrorAction Stop)
     $adsCount = @($streams | Where-Object { [string]$_.Stream -cne ':$DATA' }).Count
     if ($adsCount -ne 0) {
-        throw "DEMO_M5_SECRET_ADS_PRESENT"
+        throw "DEMO_PROVIDER_SECRET_ADS_PRESENT"
     }
     $hardlinks = @(& fsutil.exe hardlink list $secretPath 2>$null)
     if ($LASTEXITCODE -ne 0 -or $hardlinks.Count -ne 1) {
-        throw "DEMO_M5_SECRET_HARDLINK_METADATA_INVALID"
+        throw "DEMO_PROVIDER_SECRET_HARDLINK_METADATA_INVALID"
     }
 
     foreach ($port in $ports) {
@@ -3180,13 +3357,25 @@ function Invoke-Preflight {
         })
         stale_runtime_pids = $stalePidProjection
         frozen_file_fingerprints = $frozenEvidence
-        m5_secret_metadata = [ordered]@{
+        provider_secret_metadata = [ordered]@{
             present = $true
             regular = $true
             non_reparse = $true
             size_positive = ($secretItem.Length -gt 0)
             acl_protected = $true
-            acl_rule_count = 4
+            acl_rule_count = [int]$secretAclProjection.rule_count
+            restricted_reader_count = [int]$secretAclProjection.restricted_reader_count
+            acl_owner_is_current_user = [bool]$secretAclProjection.owner_is_current_user
+            acl_explicit_allow_only = [bool]$secretAclProjection.explicit_allow_only
+            parent_directory_regular = $true
+            parent_directory_non_reparse = $true
+            parent_directory_acl_rule_count = [int]$secretDirectoryProjection.acl_rule_count
+            parent_directory_restricted_reader_count = `
+                [int]$secretDirectoryProjection.restricted_reader_count
+            parent_directory_acl_owner_is_current_user = `
+                [bool]$secretDirectoryProjection.acl_owner_is_current_user
+            parent_directory_acl_explicit_allow_only = `
+                [bool]$secretDirectoryProjection.acl_explicit_allow_only
             hardlink_count = 1
             ads_count = 0
             value_read = $false
@@ -3229,7 +3418,7 @@ function Invoke-Preflight {
     Write-Output "DEMO_PREFLIGHT_LISTENER_COUNT=0"
     Write-Output "DEMO_PREFLIGHT_STALE_PID_ACTIVE_COUNT=0"
     Write-Output "DEMO_PREFLIGHT_FROZEN_FILE_COUNT=8"
-    Write-Output "DEMO_PREFLIGHT_M5_SECRET_VALUE_READ=false"
+    Write-Output "DEMO_PREFLIGHT_PROVIDER_SECRET_VALUE_READ=false"
     Write-Output "DEMO_PREFLIGHT_PROVIDER_TRANSPORT=PASS"
     Write-Output ("DEMO_PREFLIGHT_PROVIDER_REACHABLE_IPV4_COUNT=" +
         [int]$providerTransport.reachable_ipv4_count)
@@ -3935,8 +4124,8 @@ function Invoke-StartLiveGateway {
     }
     Write-Output "DEMO_LIVE_GATEWAY_START=PASS"
     Write-Output "DEMO_LIVE_GATEWAY_LOOPBACK=127.0.0.1:18190"
-    Write-Output "DEMO_M5_SECRET_READ_BY_LIFECYCLE_SCRIPT=false"
-    Write-Output "DEMO_M5_SECRET_READ_BY_GATEWAY=true"
+    Write-Output "DEMO_PROVIDER_SECRET_READ_BY_LIFECYCLE_SCRIPT=false"
+    Write-Output "DEMO_PROVIDER_SECRET_READ_BY_GATEWAY=true"
 }
 
 function Read-HumanRequestBinding {

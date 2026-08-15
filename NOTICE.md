@@ -1,6 +1,6 @@
 # NOTICE
 
-Awakening AgentTeams Demo v1.0.2  
+Awakening AgentTeams Demo v1.0.3
 Copyright 2026 Awakening project contributors
 
 This product is licensed under the Apache License, Version 2.0. See `LICENSE`.

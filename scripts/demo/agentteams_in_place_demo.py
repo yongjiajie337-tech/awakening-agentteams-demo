@@ -107,7 +107,7 @@ MODEL_ID = "qwen3.7-flash-2026-07-15"
 PROVIDER_ENDPOINT = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 PROVIDER_HOSTNAME = "dashscope.aliyuncs.com"
 PROVIDER_TIMEOUT_SECONDS = 60
-PROVIDER_SECRET_FIELD = "AWAKENING_M5_PROVIDER_API_KEY"
+PROVIDER_SECRET_FIELD = "AWAKENING_DEMO_PROVIDER_API_KEY"
 PROVIDER_RESOLVED_IPV4_ENV = "AWAKENING_DEMO_PROVIDER_RESOLVED_IPV4"
 PROVIDER_PROXY_ENV_FIELDS = frozenset(
     {"HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"}
@@ -179,7 +179,7 @@ DEMO_BASE = WORKSPACE / "tmp" / "demo" / "agentteams-in-place"
 DEFAULT_FIXTURE = WORKSPACE / "tmp" / "m4" / "state" / "runtime-state.json"
 DEFAULT_M2_ENV = WORKSPACE / ".env.m2"
 DEFAULT_M4_ENV = WORKSPACE / ".env.m4"
-DEFAULT_PROVIDER_SECRET = WORKSPACE / ".env.m5.provider"
+DEFAULT_PROVIDER_SECRET = WORKSPACE / ".secrets" / "demo-provider.env"
 DEFAULT_RUNTIME_CREDENTIALS = (
     WORKSPACE
     / "tmp"
@@ -975,14 +975,23 @@ def _install_demo_provider_dns_override(
     )
 
 
-def _read_m5_provider_key(path: Path) -> str:
-    candidate = _regular_file(path, "DEMO_PROVIDER_SECRET_FILE_INVALID")
-    expected = _regular_file(
-        DEFAULT_PROVIDER_SECRET,
-        "DEMO_EXPECTED_PROVIDER_SECRET_FILE_INVALID",
-    )
-    if candidate != expected:
+def _read_demo_provider_key(path: Path) -> str:
+    candidate_path = Path(os.path.abspath(os.fspath(path)))
+    expected_path = Path(os.path.abspath(os.fspath(DEFAULT_PROVIDER_SECRET)))
+    if os.path.normcase(candidate_path) != os.path.normcase(expected_path):
         raise ValueError("DEMO_PROVIDER_SECRET_EXACT_PATH_REQUIRED")
+    parent = candidate_path.parent
+    expected_parent = expected_path.parent
+    try:
+        is_junction = getattr(parent, "is_junction", lambda: False)()
+        if parent.is_symlink() or is_junction or not parent.is_dir():
+            raise ValueError("DEMO_PROVIDER_SECRET_PARENT_DIRECTORY_INVALID")
+        resolved_parent = parent.resolve(strict=True)
+    except OSError as exc:
+        raise ValueError("DEMO_PROVIDER_SECRET_PARENT_DIRECTORY_INVALID") from exc
+    if os.path.normcase(resolved_parent) != os.path.normcase(expected_parent):
+        raise ValueError("DEMO_PROVIDER_SECRET_PARENT_DIRECTORY_INVALID")
+    candidate = _regular_file(candidate_path, "DEMO_PROVIDER_SECRET_FILE_INVALID")
     try:
         lines = candidate.read_text(encoding="utf-8-sig").splitlines()
     except (OSError, UnicodeError) as exc:
@@ -1034,7 +1043,7 @@ def _build_live_gateway(
 
     # This is deliberately the final composition input.  All provider-free
     # config, State, reservation, and runtime-token checks have already passed.
-    api_key = _read_m5_provider_key(provider_secret_path)
+    api_key = _read_demo_provider_key(provider_secret_path)
     print("AUTH_DEMO_001_GATEWAY_PROVIDER_SECRET_READ=true", flush=True)
     print("AUTH_DEMO_001_GATEWAY_PROVIDER_SECRET_ECHOED=false", flush=True)
     delegate = OpenAICompatibleProvider(

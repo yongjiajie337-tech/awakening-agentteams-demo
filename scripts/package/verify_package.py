@@ -7,25 +7,43 @@ opens a network connection, reads an environment file, or invokes a model.
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterator
 from hashlib import sha256
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
+import stat
 import sys
 
 
 PACKAGE_NAME = "awakening-agentteams-demo"
-PACKAGE_VERSION = "1.0.2"
-OFFLINE_UNIT_TEST_COUNT = 83
+PACKAGE_VERSION = "1.0.3"
+OFFLINE_UNIT_TEST_COUNT = 97
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 UUID_RE = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
 )
 REQUIRED_PATHS = (
+    ".editorconfig",
+    ".gitattributes",
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    ".github/ISSUE_TEMPLATE/feature_request.yml",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/dependabot.yml",
+    ".github/workflows/offline-verify.yml",
     "README.md",
+    "README.en.md",
     "QUICKSTART_WINDOWS.md",
     "EVIDENCE.md",
+    "SECURITY.md",
     "SECURITY_AND_SECRETS.md",
+    "docs/SECURITY_MODEL.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SUPPORT.md",
+    "CITATION.cff",
     "LICENSE",
     "NOTICE.md",
     "CHANGELOG.md",
@@ -34,6 +52,8 @@ REQUIRED_PATHS = (
     "verify_offline.ps1",
     "requirements-demo.lock",
     "pyproject.toml",
+    "scripts/package/seal_package.py",
+    "config/demo-provider.env.example",
     "config/reference-source-pins.json",
     "PACKAGE_MANIFEST.json",
     "SHA256SUMS.txt",
@@ -53,11 +73,32 @@ REQUIRED_PATHS = (
     "evidence/run-b/outputs/execution_evidence_coach.json",
     "evidence/run-b/outputs/independent_quality_reviewer.json",
 )
-FORBIDDEN_DIRECTORY_NAMES = {".git", ".venv", "__pycache__", "tmp"}
+TEXT_BOUNDARY_SUFFIXES = {
+    ".cff",
+    ".json",
+    ".jsonl",
+    ".md",
+    ".ps1",
+    ".py",
+    ".sh",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+TEXT_BOUNDARY_FILENAMES = {".editorconfig", ".gitattributes", "LICENSE"}
+FORBIDDEN_DIRECTORY_NAMES = {
+    ".git",
+    ".secrets",
+    ".venv",
+    "__pycache__",
+    "tmp",
+}
 FORBIDDEN_EXACT_FILENAMES = {
     ".env",
     ".env.m2",
     ".env.m4",
+    # Legacy internal runtime filename: forbidden payload residue, not a Demo input.
     ".env.m5.provider",
     "controller.env",
     "gateway.pid",
@@ -366,11 +407,72 @@ def _safe_relative_path(text: object) -> str:
     return path.as_posix()
 
 
+def _is_reparse_point(metadata: os.stat_result) -> bool:
+    attributes = getattr(metadata, "st_file_attributes", 0)
+    reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+    return bool(attributes & reparse_flag)
+
+
+def _lstat_payload(path: Path, relative: str) -> os.stat_result:
+    try:
+        return path.lstat()
+    except OSError as exc:
+        raise VerificationError(f"PACKAGE_TREE_READ_FAILED:{relative}") from exc
+
+
+def _verify_regular_payload_path(path: Path, relative: str) -> None:
+    metadata = _lstat_payload(path, relative)
+    if _is_reparse_point(metadata) or path.is_symlink():
+        raise VerificationError(f"PACKAGE_NON_REGULAR_PATH:{relative}")
+    if not (stat.S_ISREG(metadata.st_mode) or stat.S_ISDIR(metadata.st_mode)):
+        raise VerificationError(f"PACKAGE_NON_REGULAR_PATH:{relative}")
+
+
+def _iter_payload_paths(root: Path) -> Iterator[Path]:
+    """Yield checkout payload paths without entering root Git metadata.
+
+    A normal clone owns a top-level ``.git`` directory (or worktree metadata
+    file), neither of which is part of the distributed payload.  Only that
+    exact root entry is pruned.  A nested ``.git`` remains visible so the
+    structure verifier can reject it as payload.
+    """
+
+    def fail_closed(error: OSError) -> None:
+        raise VerificationError("PACKAGE_TREE_READ_FAILED") from error
+
+    for current_text, directory_names, file_names in os.walk(
+        root,
+        topdown=True,
+        onerror=fail_closed,
+        followlinks=False,
+    ):
+        current = Path(current_text)
+        if current == root:
+            directory_names[:] = [
+                name for name in directory_names if name.casefold() != ".git"
+            ]
+            file_names[:] = [
+                name for name in file_names if name.casefold() != ".git"
+            ]
+        directory_names.sort(key=str.casefold)
+        file_names.sort(key=str.casefold)
+        for name in directory_names:
+            path = current / name
+            relative = path.relative_to(root).as_posix()
+            _verify_regular_payload_path(path, relative)
+            yield path
+        for name in file_names:
+            path = current / name
+            relative = path.relative_to(root).as_posix()
+            _verify_regular_payload_path(path, relative)
+            yield path
+
+
 def _all_payload_files(root: Path) -> list[str]:
     excluded = {"PACKAGE_MANIFEST.json", "SHA256SUMS.txt"}
     return sorted(
         path.relative_to(root).as_posix()
-        for path in root.rglob("*")
+        for path in _iter_payload_paths(root)
         if path.is_file() and path.relative_to(root).as_posix() not in excluded
     )
 
@@ -380,10 +482,15 @@ def _verify_structure(root: Path) -> None:
     if missing:
         raise VerificationError("REQUIRED_PATH_MISSING:" + ",".join(missing))
 
-    for path in root.rglob("*"):
+    for path in _iter_payload_paths(root):
         relative = path.relative_to(root)
+        if path.is_dir() and path.name.casefold() == "__pycache__":
+            raise VerificationError(
+                "PACKAGE_TRANSIENT_RESIDUE_FOUND="
+                f"type=python-bytecode;path={relative.as_posix()}"
+            )
         if path.is_file():
-            parent_parts = relative.parts[:-1]
+            parent_parts = tuple(part.casefold() for part in relative.parts[:-1])
             if "__pycache__" in parent_parts:
                 cache_index = parent_parts.index("__pycache__")
                 residue_directory = PurePosixPath(
@@ -393,13 +500,21 @@ def _verify_structure(root: Path) -> None:
                     "PACKAGE_TRANSIENT_RESIDUE_FOUND="
                     f"type=python-bytecode;path={residue_directory}"
                 )
-            if path.suffix.lower() in {".pyc", ".pyo"}:
+            if path.suffix.casefold() in {".pyc", ".pyo"}:
                 residue_directory = relative.parent.as_posix()
                 raise VerificationError(
                     "PACKAGE_TRANSIENT_RESIDUE_FOUND="
                     f"type=python-bytecode;path={residue_directory}"
                 )
-        if any(part in FORBIDDEN_DIRECTORY_NAMES for part in relative.parts[:-1]):
+        directory_parts = (
+            relative.parts
+            if path.is_dir() or path.name.casefold() == ".git"
+            else relative.parts[:-1]
+        )
+        if any(
+            part.casefold() in FORBIDDEN_DIRECTORY_NAMES
+            for part in directory_parts
+        ):
             raise VerificationError(f"FORBIDDEN_DIRECTORY:{relative.as_posix()}")
         if not path.is_file():
             continue
@@ -487,7 +602,7 @@ def _verify_sha256sums(root: Path) -> None:
         seen[relative] = digest
     expected = sorted(
         path.relative_to(root).as_posix()
-        for path in root.rglob("*")
+        for path in _iter_payload_paths(root)
         if path.is_file() and path.name != "SHA256SUMS.txt"
     )
     if sorted(seen) != expected:
@@ -532,7 +647,7 @@ def _verify_reference_source_pins(root: Path) -> None:
     }
     expected = {
         path.relative_to(root).as_posix()
-        for path in root.rglob("*")
+        for path in _iter_payload_paths(root)
         if path.is_file()
         and (
             path.relative_to(root).as_posix() in fixed_demo
@@ -879,9 +994,11 @@ def _verify_evidence(root: Path) -> None:
 
 
 def _verify_text_boundary(root: Path) -> None:
-    suffixes = {".md", ".txt", ".json", ".jsonl", ".yaml", ".yml", ".toml", ".ps1", ".py", ".sh"}
-    for path in root.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in suffixes:
+    for path in _iter_payload_paths(root):
+        if not path.is_file() or (
+            path.suffix.lower() not in TEXT_BOUNDARY_SUFFIXES
+            and path.name not in TEXT_BOUNDARY_FILENAMES
+        ):
             continue
         try:
             text = path.read_text(encoding="utf-8")
@@ -900,7 +1017,15 @@ def _verify_text_boundary(root: Path) -> None:
 
 
 def verify(root: Path) -> None:
-    if not root.is_dir():
+    try:
+        root_metadata = root.lstat()
+    except OSError as exc:
+        raise VerificationError("PACKAGE_ROOT_INVALID") from exc
+    if (
+        _is_reparse_point(root_metadata)
+        or root.is_symlink()
+        or not stat.S_ISDIR(root_metadata.st_mode)
+    ):
         raise VerificationError("PACKAGE_ROOT_INVALID")
     _verify_structure(root)
     _verify_manifest(root)
@@ -920,7 +1045,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     try:
-        verify(args.package_root.resolve())
+        verify(args.package_root.absolute())
     except VerificationError as exc:
         print(f"PACKAGE_PAYLOAD_VERIFY=FAIL:{exc}", file=sys.stderr)
         if str(exc).startswith("PACKAGE_TRANSIENT_RESIDUE_FOUND="):

@@ -143,6 +143,7 @@ class DemoMatrixControlContractTests(unittest.TestCase):
             "tmp/m5",
             "artifacts/m4",
             "artifacts/m5",
+            # Legacy internal Secret path remains forbidden in Matrix control.
             ".env.m5.provider",
             "PROGRESS.md",
             "BLOCKED.md",

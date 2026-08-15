@@ -32,7 +32,13 @@
     "credential_included_in_package": false,
     "credential_value_in_config": false,
     "credential_source": "existing_protected_reference_environment_only",
-    "credential_copied_by_entrypoint": false
+    "credential_copied_by_entrypoint": false,
+    "provider_secret_relative_path": ".secrets/demo-provider.env",
+    "provider_secret_field": "AWAKENING_DEMO_PROVIDER_API_KEY",
+    "provider_secret_file_format": "one UTF-8 line: AWAKENING_DEMO_PROVIDER_API_KEY=<operator-supplied-value>",
+    "provider_secret_value_in_argv": false,
+    "provider_secret_value_in_process_environment": false,
+    "provider_secret_value_logged": false
   },
   "effects": {
     "preflight_uses_network_transport_probe": true,

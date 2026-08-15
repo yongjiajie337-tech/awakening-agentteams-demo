@@ -1,6 +1,6 @@
 [project]
 name = "awakening-agentteams-demo-review-package"
-version = "1.0.2"
+version = "1.0.3"
 description = "Dual-layer offline review and reference-environment reproduction package for the Awakening AgentTeams Demo"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
@@ -18,6 +18,12 @@ dependencies = [
 ]
 
 [project.urls]
+Homepage = "https://github.com/yongjiajie337-tech/awakening-agentteams-demo"
+Repository = "https://github.com/yongjiajie337-tech/awakening-agentteams-demo"
+Documentation = "https://github.com/yongjiajie337-tech/awakening-agentteams-demo#readme"
+Issues = "https://github.com/yongjiajie337-tech/awakening-agentteams-demo/issues"
+Changelog = "https://github.com/yongjiajie337-tech/awakening-agentteams-demo/blob/main/CHANGELOG.md"
+"Security Policy" = "https://github.com/yongjiajie337-tech/awakening-agentteams-demo/blob/main/SECURITY.md"
 Competition = "https://www.goaihz.com/tracks?track=infra"
 
 [tool.awakening.demo]

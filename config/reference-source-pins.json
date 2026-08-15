@@ -309,11 +309,11 @@
     },
     {
       "path": "scripts/demo/agentteams_in_place_demo.py",
-      "sha256": "65a008e981261846fe87e9dfeb945c26abbefdeb96f884485954cdde924729f5"
+      "sha256": "b95d77aaca1c599da1468a294e68c234b9882fa47757906d8d9f5a954b8670b3"
     },
     {
       "path": "scripts/demo/Invoke-AgentTeamsInPlaceDemo.ps1",
-      "sha256": "9a82270138d1e8b3888de85ed3d70eb094a942991d98568f48102bce378c230d"
+      "sha256": "e98fb5fb62d2a5aa1e140c9085de7454d54e922772ce0ac27b6023d2d8b9dab9"
     },
     {
       "path": "scripts/demo/Start-AgentTeamsDemoHostRelay.ps1",
@@ -332,8 +332,16 @@
       "sha256": "43ab6e062a70d2735cd89a4ffc365812fbe34ba1e60cbab21c7b4846485accbf"
     },
     {
+      "path": "scripts/m4/provision-provider-state.py",
+      "sha256": "6dec03fc329491773a922775a122f19cc721f3735fa9c9f930c33eb4a382efc7"
+    },
+    {
       "path": "scripts/m4/Refresh-M4RuntimeSaTokens.ps1",
       "sha256": "7f107d0709b63c023bb43a916816dd967a60e50388146f600af14fe2eeaf24dd"
+    },
+    {
+      "path": "scripts/m4/run-real-chain.py",
+      "sha256": "dd279da8c517c0105926ed74b846a9c006151146dd1bbb86cf8ac5f19ba3045b"
     },
     {
       "path": "scripts/m4/Set-M4ManagerControlPlaneModel.ps1",
@@ -362,14 +370,6 @@
     {
       "path": "scripts/m4/Start-M4Postgres.ps1",
       "sha256": "4853d0f512caa453126f726f28139bce7fdb8071bc0658b8bac3490d3923ecc1"
-    },
-    {
-      "path": "scripts/m4/provision-provider-state.py",
-      "sha256": "6dec03fc329491773a922775a122f19cc721f3735fa9c9f930c33eb4a382efc7"
-    },
-    {
-      "path": "scripts/m4/run-real-chain.py",
-      "sha256": "dd279da8c517c0105926ed74b846a9c006151146dd1bbb86cf8ac5f19ba3045b"
     },
     {
       "path": "skills/awakening/analyze_role_gap/CHANGELOG.md",

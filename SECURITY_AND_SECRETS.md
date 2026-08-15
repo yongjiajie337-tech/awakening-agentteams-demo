@@ -1,5 +1,7 @@
 # 安全与 Secret 处理
 
+> 本文只说明离线、Live、Secret 与录屏的操作边界。疑似漏洞或 Secret 泄露的私下报告入口见 [SECURITY.md](SECURITY.md)；详细威胁模型和工程不变量见 [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md)。
+
 ## 首要规则
 
 **本代码包不包含、也不需要评委提供任何真实 Secret 来完成离线核验。**
@@ -39,7 +41,7 @@
 - 产生实际 token 与费用；
 - 在本地 Element/Matrix 留下新的 Demo 消息。
 
-真实模式必须引用参考工作区中已经存在且受保护的运行时配置，不得把 Secret 复制进代码包，也不得输出、hash、回显或上传 Secret 值。
+真实模式必须引用参考工作区中已经存在且受保护的运行时配置。Provider Secret 的公开兼容路径固定为 `<ReferenceWorkspace>/.secrets/demo-provider.env`，文件只允许字段 `AWAKENING_DEMO_PROVIDER_API_KEY`；仓库中的 `config/demo-provider.env.example` 只用于说明格式，绝不加载。不得把真实 Secret 复制进代码包、Git、命令参数或进程环境变量，也不得输出、hash、回显或上传 Secret 值。Preflight 只读元数据，Live Gateway 仅在其他 Provider-free 准入通过后的最后组合阶段读取该值。
 
 ## 已知 Demo 兼容性限制：内部 Gateway Key 的进程参数
 

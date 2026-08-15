@@ -79,7 +79,7 @@ py -3.12 --version
 
 三档官方入口都会把解压目录当作封存的评审 payload 核验。`verify_offline.ps1` 自身会用 Python 的 `-I -B` 参数，并在核验期间临时设置 `PYTHONDONTWRITEBYTECODE=1`，因此官方入口不会生成 `__pycache__`。但直接执行 `python -m unittest ...`、手动 import 包内模块或某些编辑器/插件的 Python 分析命令，可能在包目录内生成 `__pycache__`，使后续核验以 `PACKAGE_TRANSIENT_RESIDUE_FOUND` 停止。
 
-本节使用两个文档排障标签描述这一情况；它们不是 v1.0.2 脚本新增的输出码：
+当前 package verifier 会在检测到这类残留时输出下面两个稳定标签：
 
 - `PACKAGE_TRANSIENT_RESIDUE_FOUND=type=python-bytecode;path=<relative-directory>`：包目录中出现了手动工具产生、但不属于封存 payload 的 `__pycache__`、`.pyc` 或 `.pyo`；只报告安全相对目录，不输出缓存文件内容；
 - `PACKAGE_TRANSIENT_RESIDUE_RECOVERY=REEXTRACT_ORIGINAL_ZIP`：保留原目录用于查看需要的信息，从原 ZIP 重新解压到另一个全新目录，并在任何手动 Python 命令之前先运行官方核验入口。

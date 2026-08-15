@@ -2,8 +2,8 @@
 
 These tests deliberately use only temporary files and a fake in-memory
 Provider.  Importing the driver and running this suite must not start Docker,
-open State/Postgres, send Matrix events, read the real M5 Secret, or use the
-network.
+open State/Postgres, send Matrix events, read the real Provider Secret, or use
+the network.
 """
 
 from __future__ import annotations
@@ -150,11 +150,13 @@ class AgentTeamsInPlaceDemoOfflineTests(unittest.TestCase):
                     ):
                         DEMO._load_demo_live_config(config_path)
 
-    def test_m5_secret_reader_requires_exact_patched_path_and_field(self) -> None:
+    def test_demo_secret_reader_requires_exact_neutral_path_and_field(self) -> None:
         synthetic_value = "offline-only-synthetic-key-1234567890"
         with tempfile.TemporaryDirectory() as temporary:
-            temporary_path = Path(temporary)
-            expected = temporary_path / ".env.m5.provider"
+            # Match the production invariant: WORKSPACE is resolved at import time.
+            temporary_path = Path(temporary).resolve(strict=True)
+            expected = temporary_path / ".secrets" / "demo-provider.env"
+            expected.parent.mkdir()
             other = temporary_path / "copied-secret.env"
             valid_line = f"{DEMO.PROVIDER_SECRET_FIELD}={synthetic_value}\n"
             expected.write_text(valid_line, encoding="utf-8")
@@ -163,23 +165,109 @@ class AgentTeamsInPlaceDemoOfflineTests(unittest.TestCase):
             with patch.object(DEMO, "DEFAULT_PROVIDER_SECRET", expected):
                 self.assertEqual(
                     synthetic_value,
-                    DEMO._read_m5_provider_key(expected),
+                    DEMO._read_demo_provider_key(expected),
                 )
                 with self.assertRaisesRegex(
                     ValueError,
                     "^DEMO_PROVIDER_SECRET_EXACT_PATH_REQUIRED$",
                 ):
-                    DEMO._read_m5_provider_key(other)
+                    DEMO._read_demo_provider_key(other)
 
+                # The legacy M5-only field is a negative regression fixture.
                 expected.write_text(
-                    f"AWAKENING_M4_PROVIDER_API_KEY={synthetic_value}\n",
+                    f"AWAKENING_M5_PROVIDER_API_KEY={synthetic_value}\n",
                     encoding="utf-8",
                 )
                 with self.assertRaisesRegex(
                     ValueError,
                     "^DEMO_PROVIDER_SECRET_FIELDS_INVALID$",
                 ):
-                    DEMO._read_m5_provider_key(expected)
+                    DEMO._read_demo_provider_key(expected)
+
+        self.assertEqual(
+            "AWAKENING_DEMO_PROVIDER_API_KEY",
+            DEMO.PROVIDER_SECRET_FIELD,
+        )
+        self.assertEqual(
+            ".secrets/demo-provider.env",
+            DEMO.DEFAULT_PROVIDER_SECRET.relative_to(DEMO.WORKSPACE).as_posix(),
+        )
+        self.assertFalse(hasattr(DEMO, "_read_m5_provider_key"))
+
+    @unittest.skipUnless(os.name == "nt", "Windows directory-junction contract")
+    def test_demo_secret_reader_rejects_parent_junction_before_read_text(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            workspace = root / "reference-workspace"
+            target = root / "outside-secret-directory"
+            workspace.mkdir()
+            target.mkdir()
+            junction = workspace / ".secrets"
+            create = subprocess.run(
+                ["cmd.exe", "/d", "/c", "mklink", "/J", str(junction), str(target)],
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=False,
+                timeout=10,
+            )
+            if create.returncode != 0 or not junction.exists():
+                self.skipTest("directory junction creation is unavailable")
+            try:
+                secret = junction / "demo-provider.env"
+                (target / "demo-provider.env").write_text(
+                    f"{DEMO.PROVIDER_SECRET_FIELD}=offline-only-synthetic-key-1234567890\n",
+                    encoding="utf-8",
+                )
+                with patch.object(DEMO, "DEFAULT_PROVIDER_SECRET", secret):
+                    with patch.object(
+                        Path,
+                        "read_text",
+                        side_effect=AssertionError("SECRET_READ_MUST_NOT_OCCUR"),
+                    ):
+                        with self.assertRaisesRegex(
+                            ValueError,
+                            "^DEMO_PROVIDER_SECRET_PARENT_DIRECTORY_INVALID$",
+                        ):
+                            DEMO._read_demo_provider_key(secret)
+            finally:
+                if junction.exists():
+                    os.rmdir(junction)
+
+    def test_reference_example_declares_secret_path_without_value_channel(
+        self,
+    ) -> None:
+        document = json.loads(
+            (WORKSPACE / "config" / "reference-runtime.example.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        boundary = document["credential_boundary"]
+        self.assertEqual(
+            ".secrets/demo-provider.env",
+            boundary["provider_secret_relative_path"],
+        )
+        self.assertEqual(
+            "AWAKENING_DEMO_PROVIDER_API_KEY",
+            boundary["provider_secret_field"],
+        )
+        self.assertFalse(boundary["credential_value_in_config"])
+        self.assertFalse(boundary["provider_secret_value_in_argv"])
+        self.assertFalse(boundary["provider_secret_value_in_process_environment"])
+        self.assertFalse(boundary["provider_secret_value_logged"])
+        template = (
+            WORKSPACE / "config" / "demo-provider.env.example"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            "AWAKENING_DEMO_PROVIDER_API_KEY=<operator-supplied-value>",
+            template,
+        )
+        # Legacy internal identifiers must never become a public success path.
+        self.assertNotIn("AWAKENING_M5_PROVIDER_API_KEY", template)
+        self.assertIn(
+            ".secrets/",
+            (WORKSPACE / ".gitignore").read_text(encoding="utf-8"),
+        )
 
     def test_demo_provider_resolver_rejects_fake_ip_and_non_public_addresses(self) -> None:
         invalid_values = (
@@ -495,7 +583,14 @@ class AgentTeamsInPlaceDemoOfflineTests(unittest.TestCase):
         self.assertIn("Assert-DemoLiveGatewayMarkers", source)
         self.assertIn("Assert-DemoLiveGatewayRuntimeBinding -Paths $paths", source)
         self.assertIn('-SecretValueReadStatus "true"', source)
-        self.assertIn("DEMO_M5_SECRET_READ_BY_GATEWAY=true", source)
+        self.assertIn("DEMO_PROVIDER_SECRET_READ_BY_GATEWAY=true", source)
+        self.assertIn('.secrets\\demo-provider.env', source)
+        # These are negative assertions for removed legacy runtime coupling.
+        self.assertNotIn(".env.m5.provider", source)
+        self.assertNotIn("AWAKENING_M5_PROVIDER_API_KEY", source)
+        self.assertNotIn("DEMO_M5_SECRET", source)
+        self.assertNotIn(".env.m5.provider", driver_source)
+        self.assertNotIn("AWAKENING_M5_PROVIDER_API_KEY", driver_source)
         self.assertIn("provider_model_request_sent = $false", source)
         self.assertIn("single_use_plan_claim_count = 0", source)
         self.assertNotIn('header "Authorization:', source)

@@ -18,8 +18,8 @@ $ErrorActionPreference = "Stop"
 
 $packageRoot = [IO.Path]::GetFullPath($PSScriptRoot)
 $verifier = Join-Path $packageRoot "scripts\package\verify_package.py"
-$expectedFullUnitTestCount = 83
-$expectedStdlibUnitTestCount = 21
+$expectedFullUnitTestCount = 97
+$expectedStdlibUnitTestCount = 33
 $fullUnitTestDirectories = @(
     "tests/unit/demo",
     "tests/unit/m4"
@@ -27,7 +27,9 @@ $fullUnitTestDirectories = @(
 $stdlibUnitTestFiles = @(
     "tests/unit/demo/test_demo_matrix_control_contract.py",
     "tests/unit/demo/test_demo_worker_gateway_key_sync_contract.py",
-    "tests/unit/demo/test_offline_verify_contract.py"
+    "tests/unit/demo/test_offline_verify_contract.py",
+    "tests/unit/demo/test_provider_secret_acl_contract.py",
+    "tests/unit/demo/test_release_sealer.py"
 )
 
 $effectiveMode = if ($Mode -ieq "Stdlib") {

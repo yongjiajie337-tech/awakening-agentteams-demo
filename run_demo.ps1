@@ -54,12 +54,14 @@ function Write-Runbook {
     Write-Output "PACKAGE_LIVE_BOOTSTRAP=false"
     Write-Output "PACKAGE_CREDENTIAL_INCLUDED=false"
     Write-Output ""
-    Write-Output "1. Immediate package-only verification (no Python third-party dependency, Docker, network, Provider, or Secret):"
-    Write-Output '   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\verify_offline.ps1 -Mode PackageOnly'
-    Write-Output "   For the recommended 81-test Full profile, first create the external locked Python 3.12 environment documented in QUICKSTART_WINDOWS.md."
+    Write-Output "1. Recommended no-third-party-dependency verification (no Docker, network, Provider, or Secret):"
+    Write-Output '   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\verify_offline.ps1 -Mode Stdlib'
+    Write-Output "   For the recommended Full profile, first create the external locked Python 3.12 environment documented in QUICKSTART_WINDOWS.md."
+    Write-Output "   Use -Mode PackageOnly only when you intentionally want manifest/evidence/hash checks without unit tests."
     Write-Output ""
     Write-Output "2. Prepare a separate compatible AgentTeams v1.1.2 reference workspace."
     Write-Output "   The reference workspace must already contain its protected local runtime configuration."
+    Write-Output "   Its Provider Secret must be the single-field file .secrets/demo-provider.env described in config/demo-provider.env.example; never place the value in this repository."
     Write-Output ""
     Write-Output "3. Create a fresh Demo execution-window UUID, then run the reference preflight:"
     Write-Output '   $demoRunId = [guid]::NewGuid()'
