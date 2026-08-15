@@ -1,6 +1,10 @@
-# Awakening AgentTeams Demo v1.0.2
+# Awakening AgentTeams Demo
 
-这是一个面向赛事初赛评审的 **AgentTeams 双层评审包**。它把“无需真实调用即可检查的代码与证据”和“需要兼容参考环境才能再次触发的真实多 Agent 流程”明确分开。
+[中文说明](README.md) · [English](README.en.md) · [贡献指南](CONTRIBUTING.md) · [获取帮助](SUPPORT.md) · [安全政策](SECURITY.md)
+
+[GitHub 仓库](https://github.com/yongjiajie337-tech/awakening-agentteams-demo) · [稳定基线 v1.0.2](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2) · [更新记录](CHANGELOG.md)
+
+这是 Awakening 的 AgentTeams 开源 Demo，也是面向赛事初赛评审的 **双层评审包**。它把“无需真实调用即可检查的代码与证据”和“需要兼容参考环境才能再次触发的真实多 Agent 流程”明确分开。
 
 **场景价值与迁移边界：** Awakening 面向“知道目标岗位、却难以把零散经历转成可验证项目证据”的个人求职者：Architect 对照岗位要求识别缺口，Coach 检查任务与证据准备，Reviewer 在本 Demo 中只做封闭合成包的契约冒烟检查。迁移到培训、研发质量或客服工单等场景时，可复用 Manager/Worker 拓扑、身份权限、结构化交接、状态与审计机制，但必须替换领域事实、评价标准、Skill/Schema 和业务写入政策；本包没有证明这些行业迁移已经落地，也不把 synthetic 结果当作真实用户成效。
 
@@ -10,9 +14,31 @@
 
 对应赛事页面：[世界人工智能开源大赛 · GOAI Agent Infra 赛道](https://www.goaihz.com/tracks?track=infra)。本包用下表把初赛代码包的五项建议内容逐一落到可检查文件。
 
+## 先看结论：哪些是真实的，哪些没有声明
+
+| 项目 | 本仓库的准确声明 |
+|---|---|
+| 多 Agent 拓扑 | 真实运行过 `1 Manager + 3 Worker`；三个 Worker 分别是 Architect、Coach、Reviewer |
+| Manager | 确定性的策略/契约控制面，模型调用为 `0`；不声称 LLM 自主选人、选工具或重规划 |
+| Worker 调用 | 两轮成功 Demo 中，每轮三个 Worker 各有一次 Provider 调用，均返回结构化结果 |
+| Reviewer | 真实调用，但范围是 `contract_smoke`；不等同于正式业务评审、事实核验或 M5 验收 |
+| 可视化 | Matrix/Element 中保留 Manager 与各 Worker 房间、阶段事件和结果流转 |
+| 运行证据 | 随仓库提供两轮脱敏安全投影及六份 canonical Worker 输出，可离线校验内部一致性 |
+| 费用 | 只提供按记录 token 与固定单价计算的本地结果；没有用远端账单独立核验 |
+| 复现 | 离线核验可独立运行；实时流程需要已准备好的 AgentTeams v1.1.2 兼容参考环境 |
+
+当前稳定、不可变的比赛包基线是 Git 标签 [`v1.0.2`](https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2)。后续开源改进先进入开发分支和 `Unreleased` 更新记录，只有完成核验、合并并创建新标签后才成为新的稳定发布。
+
 ## 评委从哪里开始
 
-请先从原 ZIP 解压到一个**全新、未使用过的目录**，并在手动执行 Python import、自定义 unittest 或其他代码检查之前运行官方核验入口。Windows PowerShell 5.1 或 PowerShell 7 中，先在**包目录外**创建锁定的 Python 3.12 环境，再运行完整核验：
+可以从 GitHub 克隆仓库，也可以下载稳定标签对应的发布归档。为避免历史文件或本机缓存干扰严格清单核验，请使用一个**干净 checkout/全新解压目录**，并在手动执行 Python import、自定义 unittest 或其他代码检查之前运行核验入口：
+
+```powershell
+git clone https://github.com/yongjiajie337-tech/awakening-agentteams-demo.git
+Set-Location .\awakening-agentteams-demo
+```
+
+Windows PowerShell 5.1 或 PowerShell 7 中，先在**仓库目录外**创建锁定的 Python 3.12 环境，再运行完整核验：
 
 ```powershell
 py -3.12 -m venv ..\.venv-awakening-demo-review
@@ -20,9 +46,9 @@ py -3.12 -m venv ..\.venv-awakening-demo-review
 .\verify_offline.ps1 -Mode Full -PythonPath '..\.venv-awakening-demo-review\Scripts\python.exe'
 ```
 
-创建环境和安装依赖可能访问 Python 包索引；安装完成后的核验本身不启动 Docker、不访问网络、不读取 Provider Secret，也不会产生模型费用。完整入口检查包结构、配置样例、脱敏证据、哈希，并运行精确 `83` 项 Demo/M4 聚焦测试；这是有意选择的关键路径测试集合，**不是** `src/awakening/` 的全量行覆盖或分支覆盖声明。
+创建环境和安装依赖可能访问 Python 包索引；安装完成后的核验本身不启动 Docker、不访问网络、不读取 Provider Secret，也不会产生模型费用。完整入口检查包结构、配置样例、脱敏证据、哈希，并运行本版本随附的 Demo/M4 聚焦测试；精确数量由入口在运行时打印。这是有意选择的关键路径测试集合，**不是** `src/awakening/` 的全量行覆盖或分支覆盖声明。
 
-若暂时不安装第三方 Python 依赖，优先执行 `Stdlib`。它仍会运行完整 package verifier，并固定发现 `21` 项标准库测试；若本机没有 Git for Windows Bash，其中 `1` 项动态负向测试会明确标记为 skipped，其余测试继续执行：
+若暂时不安装第三方 Python 依赖，优先执行 `Stdlib`。它仍会运行完整 package verifier 和不依赖第三方包的标准库测试；若本机没有 Git for Windows Bash，相应动态负向测试会明确标记为 skipped，其余测试继续执行：
 
 ```powershell
 .\verify_offline.ps1 -Mode Stdlib
@@ -142,7 +168,7 @@ Manager summary + Matrix/Element visible event flow
 
 ## 安全提醒
 
-在执行真实模式前必须阅读 [SECURITY_AND_SECRETS.md](SECURITY_AND_SECRETS.md)。特别是：
+漏洞、疑似 Secret 泄露或可被利用的安全问题，请按 [SECURITY.md](SECURITY.md) 私下报告，不要在公开 Issue 或 Pull Request 中披露细节。执行真实模式前必须阅读操作型规则 [SECURITY_AND_SECRETS.md](SECURITY_AND_SECRETS.md)；详细威胁模型与工程边界见 [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md)。特别是：
 
 - 不要把真实密钥填入或提交到本包；
 - 不要把参考环境的 `.env`、运行时 secret 或数据库复制进本包；
@@ -153,10 +179,29 @@ Manager summary + Matrix/Element visible event flow
 
 本项目代码按 Apache License 2.0 提供，见 [LICENSE](LICENSE)。第三方组件与未随包分发的软件说明见 [NOTICE.md](NOTICE.md)。
 
+## 参与开源
+
+欢迎从小而明确的改进开始，例如修正文档、补充可复现的失败案例、完善跨平台核验，或为一个纯逻辑边界增加测试。第一次参与也没有关系：[CONTRIBUTING.md](CONTRIBUTING.md) 提供了从 Fork、建分支、运行核验到提交 Pull Request 的逐步说明。
+
+提交前请特别注意：
+
+- 不提交 API Key、Token、密码、`.env`、Matrix 历史、数据库或包含个人信息的原始证据；
+- 不把 synthetic Demo 写成真实用户成效，不把 `contract_smoke` 写成正式业务评审；
+- 改变 Manager 路由、权限、Provider 调用、状态写入或证据口径前，先开 Issue 说明目标和风险；
+- 公开问题与使用疑问见 [SUPPORT.md](SUPPORT.md)，疑似漏洞或 Secret 泄露按 [SECURITY.md](SECURITY.md) 私下报告；
+- 所有参与者应遵守 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
+
 ## 进一步阅读
 
+- [English overview](README.en.md)
+- [贡献指南](CONTRIBUTING.md)
+- [支持与问题反馈](SUPPORT.md)
+- [引用本项目](CITATION.cff)
+- [更新记录](CHANGELOG.md)
 - [Windows 快速开始](QUICKSTART_WINDOWS.md)
 - [证据索引与限制](EVIDENCE.md)
+- [安全政策与漏洞报告](SECURITY.md)
+- [详细安全模型](docs/SECURITY_MODEL.md)
 - [安全与秘密处理](SECURITY_AND_SECRETS.md)
 - [系统架构](docs/ARCHITECTURE.md)
 - [参考环境复现](docs/REFERENCE_ENVIRONMENT.md)

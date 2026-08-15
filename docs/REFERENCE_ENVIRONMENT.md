@@ -19,7 +19,7 @@
 - 独立 Manager/Worker Matrix 房间；
 - 宿主 Relay、State 服务、Gateway 与 PostgreSQL 依赖；
 - Python 3.12；
-- 受保护的本地 Provider 配置，且不在本代码包中。
+- 受保护的本地 Provider 配置：参考工作区内 `.secrets/demo-provider.env`，只含字段 `AWAKENING_DEMO_PROVIDER_API_KEY`；真实值不在本代码包中。
 
 “AgentTeams v1.1.2 兼容”表示配置、容器入口、房间/身份和脚本行为与成功环境一致；不表示所有未来版本或其他发行形态自动兼容。
 
@@ -42,6 +42,26 @@
 
 不要通过把 `.env` 或 runtime secret 复制到评审包的方式“修复”缺失配置。
 
+## Provider Secret 配置边界
+
+公开仓库只分发不含凭据的 [../config/demo-provider.env.example](../config/demo-provider.env.example)。Live 参考环境必须由操作员在**独立参考工作区**创建：
+
+```text
+<ReferenceWorkspace>/.secrets/demo-provider.env
+```
+
+文件必须为 UTF-8、普通非 reparse 文件，并只含一行：
+
+```text
+AWAKENING_DEMO_PROVIDER_API_KEY=<operator-supplied-value>
+```
+
+真实值不得进入 Git、公开包、命令参数、进程环境变量、配置样例、日志或录屏。本仓库不提供自动生成、迁移或复制 Secret 的工具；旧 `.env.m5.provider` 不会被读取或自动迁移。操作员必须使用其组织或参考环境已有的安全 Secret 流程创建并保护文件，公开入口不会代为生成、复制或降级 ACL。
+
+Preflight 不读取、输出或 hash Secret 值。它先验证父目录精确为 `<ReferenceWorkspace>/.secrets`，且为普通、非 symlink/junction/reparse 目录；父目录通过后才检查 Secret 文件。父目录与文件都必须满足可见 ACL 元数据门：关闭继承；Owner 是当前操作员；当前操作员、`SYSTEM`、`Administrators` 各有一条显式 `Allow FullControl`；最多再有一条权限不超过 `Read + Synchronize` 的显式受限 reader。`Everyone`、`Authenticated Users`、`BUILTIN\Users`、`BUILTIN\Guests`、`Anonymous`，以及任何额外创建文件/目录、写入、删除、改 Owner 或改权限能力，都会 fail closed。三条紧 ACL 和四条受限-reader ACL 都受支持。
+
+该语义门只是对检查时本机返回的 ACL 元数据进行一致性校验，不构成主机、管理员身份、凭据来源或云端账号的安全认证。Live Gateway 只有在其他 Provider-free 准入全部通过后的最后组合阶段才读取该值。
+
 ## Preflight
 
 在包根目录执行：
@@ -63,14 +83,14 @@ Preflight 应确认：
 - Element/Matrix 参考端点可用；
 - 角色与绑定满足 1+3 拓扑；
 - 没有明显并发 Demo；
-- Secret 文件只在参考环境受保护位置存在，不输出其内容；
+- `.secrets` 父目录是参考工作区内的普通非 reparse 目录，父目录与 `demo-provider.env` 文件都满足上述 ACL 语义门；兼容文件的字段名应精确为 `AWAKENING_DEMO_PROVIDER_API_KEY`，该字段格式由获准的 Live Gateway 在最后组合阶段 fail closed 校验，不由 Preflight 读取；
 - 真实调用前预算/授权条件明确。
 
 Preflight 不调用模型、不读取 Secret 值，但它会做公网传输探测、只读 Docker 检查，并在参考工作区写入 fresh 准入证据，因此不是“完全只读”。
 
 冻结 shell 中的固定 JSON `probe_body` 是后续 **live 凭据 preflight/probe** 的 contract fixture，不由公开 `-Mode Preflight` 执行，因此不改变上一段“Preflight 不读取 Secret”的边界。它只验证现有内部 Gateway 凭据能到达 `403 / CALL_PLAN_UNAVAILABLE` 的 fail-closed 边界，并要求 Provider 调用数为 `0`。它不是项目方输入的业务任务，也不应到达 Provider；shell 保持不改是为了维持参考源码 pin。
 
-任何必需条件不满足时应 fail closed，不应自动创建账号、覆盖配置或降低权限。
+任何必需条件不满足时应 fail closed，不应自动创建账号、生成或迁移 Secret、覆盖配置或降低权限。
 
 ## Live
 

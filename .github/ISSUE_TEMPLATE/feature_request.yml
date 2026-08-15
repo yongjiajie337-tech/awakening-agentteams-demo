@@ -1,0 +1,60 @@
+name: "Feature request / 功能建议"
+description: "Propose a bounded improvement with a clear user outcome. / 提议目标明确、边界清晰的改进。"
+title: "[Feature] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the user problem first, then the proposed implementation. Do not include secrets, personal data, or private evidence.
+
+        请先说明用户问题，再说明建议方案；不要提交密钥、个人信息或未公开证据。
+
+  - type: checkboxes
+    id: safety-check
+    attributes:
+      label: "Safety check / 安全检查"
+      options:
+        - label: "I confirmed that this request contains no secrets or sensitive personal data. / 我确认本建议不包含密钥或敏感个人信息。"
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "User problem / 用户问题"
+      description: "Who is blocked, and what outcome are they unable to reach? / 谁被卡住，无法得到什么结果？"
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: "Desired outcome / 期望结果"
+      description: "Describe observable success without prescribing an implementation. / 描述可观察的成功结果，不必先限定技术实现。"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "Proposed approach / 建议方案"
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives considered / 考虑过的替代方案"
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: "Scope impact / 范围影响"
+      options:
+        - label: "Documentation / 文档"
+        - label: "Offline verification / 离线核验"
+        - label: "Agent orchestration or contracts / Agent 编排或契约"
+        - label: "Reference-environment live demo / 参考环境真实 Demo"
+        - label: "Security, privacy, or secrets / 安全、隐私或密钥"
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context / 补充信息"

@@ -12,7 +12,7 @@
 建议解压到不含权限限制的普通目录，例如：
 
 ```powershell
-Set-Location 'D:\review\awakening-agentteams-demo-v1.0.2'
+Set-Location 'D:\review\awakening-agentteams-demo'
 ```
 
 不要从压缩包预览窗口直接运行脚本。
@@ -117,11 +117,31 @@ examples/output/
 - AgentTeams v1.1.2 兼容实例；
 - Matrix homeserver 与可登录的 Element Web；
 - 已配置的 1 Manager + 3 Worker 身份、房间和服务账号；
-- 参考工作区中已存在、受保护且不在本包中的 Provider/Gateway 配置；
+- 参考工作区中已存在、受保护且不在本包中的 Provider/Gateway 配置；Provider Secret 必须位于 `.secrets/demo-provider.env`，并只含字段 `AWAKENING_DEMO_PROVIDER_API_KEY`；
 - 已理解可能产生的 Provider 调用与费用；
 - 对历史 M4 内部 Gateway Key 探针限制的明确接受。
 
 完整清单见 [docs/REFERENCE_ENVIRONMENT.md](docs/REFERENCE_ENVIRONMENT.md)。
+
+### 准备中性的 Provider Secret 文件
+
+本仓库只提供不含真实值的格式模板 [config/demo-provider.env.example](config/demo-provider.env.example)。真实值只能由参考环境的操作员写入**另一个参考工作区**中的：
+
+```text
+<ReferenceWorkspace>\.secrets\demo-provider.env
+```
+
+该文件必须是普通、非 reparse 文件，UTF-8 且只含一行：
+
+```text
+AWAKENING_DEMO_PROVIDER_API_KEY=<operator-supplied-value>
+```
+
+本仓库**没有**自动生成、迁移或复制 Secret 的工具。请使用你所在组织或参考环境已有的安全 Secret 流程，由操作员在参考工作区创建并保护该文件；旧的 `.env.m5.provider` 不会被读取或自动迁移。不要把填入真实值后的文件复制回本仓库、提交到 Git、放进命令参数/进程环境变量，或出现在终端和录屏中。
+
+`Preflight` 不读取 Secret 值。它会先确认父目录精确为参考工作区下的 `.secrets`，并且该目录是普通、非 symlink/junction/reparse 目录；只有父目录通过后才检查 Secret 文件元数据、硬链接和 ADS。父目录与 Secret 文件都必须满足下面的 Windows ACL 语义门：ACL 关闭继承，Owner 是当前操作员；当前操作员、`SYSTEM`、`Administrators` 各有一条显式 `Allow FullControl`；除此之外最多允许一条显式只读 ACE，权限不得超过 `Read + Synchronize`。`Everyone`、`Authenticated Users`、`BUILTIN\Users`、`BUILTIN\Guests` 和 `Anonymous` 一律拒绝，任何额外创建文件/目录、写入、删除、改 Owner 或改权限能力也一律拒绝。三条紧 ACL 和“前三条 + 一条受限 reader”均可通过。
+
+这只是对当前本机可见 ACL 元数据的 fail-closed 语义校验，不是对主机、管理员账号、Secret 来源或云端账号安全性的认证。校验失败时请回到组织/参考环境的安全 Secret 流程修正权限；不要通过关闭检查、放宽 ACL 或复制 Secret 来绕过。
 
 ### 1. 执行预运行准入
 
@@ -136,7 +156,7 @@ $demoRunId = [guid]::NewGuid()
   -IUnderstandThisChangesReferenceState
 ```
 
-`Preflight` 不调用模型、不读取 Secret 值，但会做公网传输探测、只读查询 Docker，并在参考工作区创建 fresh 证据目录。缺少环境或配置时应 fail closed；它不会为了“帮你补齐”而复制秘密文件。保存它输出的 `DemoRunId`，后续所有步骤必须使用同一个值。
+`Preflight` 不调用模型、不读取 Secret 值，但会做公网传输探测、只读查询 Docker，并在参考工作区创建 fresh 证据目录。缺少环境或配置时应 fail closed；它不会为了“帮你补齐”而生成、迁移或复制秘密文件。保存它输出的 `DemoRunId`，后续所有步骤必须使用同一个值。
 
 ### 2. 打开可视化界面
 

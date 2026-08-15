@@ -1,0 +1,55 @@
+name: Offline verification
+
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: offline-verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-offline-verification:
+    name: Windows / Python 3.12 / Full
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PIP_NO_INPUT: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.6.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-demo.lock
+
+      - name: Check deterministic release seal
+        shell: powershell
+        run: python -I -B .\scripts\package\seal_package.py --check
+
+      - name: Install locked review dependencies
+        shell: powershell
+        run: python -m pip install --requirement .\requirements-demo.lock
+
+      - name: Run full offline verification
+        shell: powershell
+        run: |
+          $pythonPath = (Get-Command python.exe -ErrorAction Stop).Source
+          .\verify_offline.ps1 -PythonPath $pythonPath -Mode Full

@@ -1,0 +1,19 @@
+# This repository contains evidence whose SHA-256 values bind exact bytes.
+# Disable Git EOL normalization for every path so checkout/staging cannot
+# silently rewrite the v1.0.2 baseline (which already includes a small number
+# of mixed-EOL files whose exact bytes are pinned). .editorconfig asks editors
+# to use LF for newly created or deliberately rewritten text.
+* -text
+
+# Preserve human-readable diffs without enabling EOL conversion.
+*.md diff
+*.txt diff
+*.py diff
+*.ps1 diff
+*.sh diff
+*.json diff
+*.jsonl diff
+*.yml diff
+*.yaml diff
+*.toml diff
+*.lock diff

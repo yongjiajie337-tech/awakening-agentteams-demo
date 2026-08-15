@@ -1,6 +1,7 @@
 # Local-only runtime and credential material must never enter the review package.
 .env*
 !.env.example
+.secrets/
 .venv/
 __pycache__/
 *.py[cod]

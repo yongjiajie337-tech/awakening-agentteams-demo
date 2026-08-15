@@ -1,0 +1,26 @@
+{
+  "cff-version": "1.2.0",
+  "message": "If you use this software or its packaged evidence, please cite it using the metadata below.",
+  "title": "Awakening AgentTeams Demo",
+  "type": "software",
+  "authors": [
+    {
+      "name": "Awakening project contributors"
+    }
+  ],
+  "abstract": "An open-source dual-layer review and reference-environment reproduction package for a deterministic one-Manager, three-Worker AgentTeams demo, including contracts, focused offline tests, sanitized run evidence, and explicit reproducibility boundaries.",
+  "version": "1.0.2",
+  "date-released": "2026-08-15",
+  "repository-code": "https://github.com/yongjiajie337-tech/awakening-agentteams-demo",
+  "repository-artifact": "https://github.com/yongjiajie337-tech/awakening-agentteams-demo/tree/v1.0.2",
+  "url": "https://github.com/yongjiajie337-tech/awakening-agentteams-demo",
+  "license": "Apache-2.0",
+  "keywords": [
+    "AgentTeams",
+    "multi-agent systems",
+    "deterministic orchestration",
+    "Matrix",
+    "reproducible evidence",
+    "AI agents"
+  ]
+}
