@@ -1195,8 +1195,8 @@
     },
     {
       "path": "tests/unit/demo/test_agentteams_in_place_demo.py",
-      "size_bytes": 39989,
-      "sha256": "1b65c71217515dab20ca4f3c56138e9ae1d2b22dade0e86faa51ef0292d04b69"
+      "size_bytes": 40094,
+      "sha256": "6d065b56cbeddfd569cff6c9591ab4db064ed0ed733adbb2e75f30e6a11e3982"
     },
     {
       "path": "tests/unit/demo/test_demo_matrix_control_contract.py",

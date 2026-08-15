@@ -153,7 +153,8 @@ class AgentTeamsInPlaceDemoOfflineTests(unittest.TestCase):
     def test_demo_secret_reader_requires_exact_neutral_path_and_field(self) -> None:
         synthetic_value = "offline-only-synthetic-key-1234567890"
         with tempfile.TemporaryDirectory() as temporary:
-            temporary_path = Path(temporary)
+            # Match the production invariant: WORKSPACE is resolved at import time.
+            temporary_path = Path(temporary).resolve(strict=True)
             expected = temporary_path / ".secrets" / "demo-provider.env"
             expected.parent.mkdir()
             other = temporary_path / "copied-secret.env"
