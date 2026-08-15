@@ -1,0 +1,104 @@
+{
+  "contract_version": "m4",
+  "json_schema_draft": "https://json-schema.org/draft/2020-12/schema",
+  "state_mcp_methods": [
+    {
+      "method": "get_snapshot",
+      "params_schema": "state-mcp/get-snapshot.params.schema.json",
+      "allowed_agent_identities": ["awakening_program_manager"],
+      "delegates_to": "program.snapshot.get",
+      "business_write": false
+    },
+    {
+      "method": "submit_proposal",
+      "params_schema": "state-mcp/submit-proposal.params.schema.json",
+      "allowed_agent_identities": ["role_project_architect"],
+      "delegates_to": "state.proposal.submit",
+      "business_write": "state_service_only",
+      "activation_effect": "proposal_only"
+    },
+    {
+      "method": "get_command_status",
+      "params_schema": "state-mcp/get-command-status.params.schema.json",
+      "allowed_agent_identities": [
+        "awakening_program_manager",
+        "role_project_architect"
+      ],
+      "delegates_to": "command.status.get",
+      "business_write": false
+    },
+    {
+      "method": "apply_authorized_change",
+      "params_schema": "state-mcp/apply-authorized-change.params.schema.json",
+      "allowed_agent_identities": ["awakening_program_manager"],
+      "delegates_to": null,
+      "business_write": false,
+      "m4_behavior": "always_reject",
+      "reason_code": "APPROVAL_REQUIRED",
+      "m4_reason_code": "M4_APPLY_DISABLED"
+    }
+  ],
+  "internal_write_commands": [
+    {
+      "command_type": "runtime_config.snapshot.create",
+      "record_schema": "runtime-config-snapshot.schema.json",
+      "allowed_channels": ["internal"],
+      "allowed_principal_types": ["service"],
+      "required_program_role": "service",
+      "required_trusted_context": "runtime_config_spec",
+      "program_state_version_increment": false
+    },
+    {
+      "command_type": "model_budget.reserve",
+      "record_schema": "model-budget-reservation.schema.json",
+      "allowed_channels": ["internal"],
+      "allowed_principal_types": ["service"],
+      "required_program_role": "service",
+      "required_trusted_context": "model_budget_request",
+      "program_state_version_increment": false
+    },
+    {
+      "command_type": "model_budget.settle",
+      "record_schema": "provider-usage-receipt.schema.json",
+      "allowed_channels": ["internal"],
+      "allowed_principal_types": ["service"],
+      "required_program_role": "service",
+      "required_trusted_context": "provider_usage_receipt",
+      "program_state_version_increment": false
+    }
+  ],
+  "internal_queries": [
+    {
+      "query_type": "runtime_config.snapshot.get",
+      "record_schema": "runtime-config-snapshot.schema.json",
+      "allowed_channels": ["internal"],
+      "allowed_principal_types": ["service"],
+      "required_program_role": "service",
+      "business_write": false
+    },
+    {
+      "query_type": "model_budget.reservation.get",
+      "record_schema": "model-budget-reservation.schema.json",
+      "allowed_channels": ["internal"],
+      "allowed_principal_types": ["service"],
+      "required_program_role": "service",
+      "business_write": false
+    }
+  ],
+  "agent_identity_method_matrix": {
+    "awakening_program_manager": [
+      "get_snapshot",
+      "get_command_status",
+      "apply_authorized_change"
+    ],
+    "role_project_architect": ["submit_proposal", "get_command_status"],
+    "execution_evidence_coach": [],
+    "independent_quality_reviewer": []
+  },
+  "intentionally_unregistered": [
+    "arbitrary_patch",
+    "approve",
+    "provider_call",
+    "reviewer_tool_call"
+  ]
+}

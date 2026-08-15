@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/provider-usage-receipt.schema.json",
+  "title": "M4 trusted ProviderUsageReceipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_id",
+    "program_id",
+    "run_id",
+    "model_call_id",
+    "snapshot_id",
+    "reservation_id",
+    "provider_alias",
+    "provider_request_id",
+    "request_sha256",
+    "response_sha256",
+    "usage_status",
+    "provider_status",
+    "input_tokens",
+    "output_tokens",
+    "cost_microunits",
+    "issued_by_principal_id",
+    "issued_at"
+  ],
+  "properties": {
+    "receipt_id": {"type": "string", "format": "uuid"},
+    "program_id": {"type": "string", "format": "uuid"},
+    "run_id": {"type": "string", "format": "uuid"},
+    "model_call_id": {"type": "string", "format": "uuid"},
+    "snapshot_id": {"type": "string", "format": "uuid"},
+    "reservation_id": {"type": "string", "format": "uuid"},
+    "provider_alias": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "provider_request_id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "response_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "usage_status": {"enum": ["reported", "unknown"]},
+    "provider_status": {"enum": ["succeeded", "failed", "unknown"]},
+    "input_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "output_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "cost_microunits": {"type": ["integer", "null"], "minimum": 0},
+    "issued_by_principal_id": {"type": "string", "minLength": 1, "maxLength": 255},
+    "issued_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"usage_status": {"const": "reported"}}},
+      "then": {
+        "properties": {
+          "input_tokens": {"type": "integer"},
+          "output_tokens": {"type": "integer"},
+          "cost_microunits": {"type": "integer"}
+        }
+      },
+      "else": {
+        "properties": {
+          "input_tokens": {"type": "null"},
+          "output_tokens": {"type": "null"},
+          "cost_microunits": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"provider_status": {"const": "succeeded"}}},
+      "then": {
+        "properties": {
+          "provider_request_id": {"type": "string"},
+          "response_sha256": {"type": "string"}
+        }
+      }
+    }
+  ]
+}

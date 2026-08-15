@@ -1,0 +1,24 @@
+{
+  "program_id": "10000000-0000-4000-8000-000000000001",
+  "base_state_version": 1,
+  "base_plan_version_id": "20000000-0000-4000-8000-000000000001",
+  "selected_project": {
+    "candidate_id": "project-a",
+    "title": "Deterministic agent workflow test harness"
+  },
+  "duration_weeks": 4,
+  "tasks": [
+    {
+      "task_key": "task-1",
+      "title": "Define the fixed workflow fixture",
+      "order": 0,
+      "depends_on": []
+    },
+    {
+      "task_key": "task-2",
+      "title": "Implement and run deterministic checks",
+      "order": 1,
+      "depends_on": ["task-1"]
+    }
+  ]
+}

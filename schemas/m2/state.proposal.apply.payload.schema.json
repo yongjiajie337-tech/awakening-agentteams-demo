@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m2/state.proposal.apply.payload.schema.json",
+  "title": "state.proposal.apply payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proposal_id"],
+  "properties": {
+    "proposal_id": {"type": "string", "format": "uuid"},
+    "human_decision_id": {"type": "string", "format": "uuid"}
+  }
+}

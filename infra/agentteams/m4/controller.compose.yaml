@@ -1,0 +1,84 @@
+name: awakening-m4
+
+services:
+  controller:
+    image: ${M4_CONTROLLER_IMAGE:?Set exact M4 controller image digest}
+    container_name: awakening-m4-controller
+    environment:
+      HICLAW_KUBE_MODE: embedded
+      HICLAW_CONTROLLER_NAME: awakening-m4-controller
+      HICLAW_RESOURCE_PREFIX: awakening-m4-
+      HICLAW_RESOURCE_AUTOPREFIX: "true"
+      HICLAW_MANAGER_ENABLED: "true"
+      HICLAW_MANAGER_RUNTIME: openclaw
+      HICLAW_MANAGER_IMAGE: ${M4_MANAGER_IMAGE:?Set exact M4 manager image digest}
+      HICLAW_DEFAULT_WORKER_RUNTIME: openclaw
+      HICLAW_WORKER_IMAGE: ${M4_WORKER_IMAGE:?Set exact M4 worker image digest}
+      HICLAW_DEFAULT_MODEL: qwen3.7-flash-2026-07-15
+      HICLAW_MANAGER_MODEL: qwen3.7-flash-2026-07-15
+      HICLAW_ADMIN_USER: awakening-m4-admin
+      HICLAW_ADMIN_PASSWORD: ${M4_ADMIN_PASSWORD:?Set local M4 admin password}
+      HICLAW_MANAGER_PASSWORD: ${M4_MANAGER_PASSWORD:?Set local M4 manager password}
+      HICLAW_REGISTRATION_TOKEN: ${M4_REGISTRATION_TOKEN:?Set local M4 registration token}
+      HICLAW_MINIO_USER: awakeningm4
+      HICLAW_MINIO_PASSWORD: ${M4_MINIO_PASSWORD:?Set local M4 MinIO password}
+      HICLAW_MANAGER_GATEWAY_KEY: ${M4_MANAGER_GATEWAY_KEY:?Set local M4 Manager gateway key}
+      HICLAW_MATRIX_DOMAIN: matrix-m4.local:8080
+      HICLAW_ELEMENT_HOMESERVER_URL: http://127.0.0.1:18180
+      HICLAW_MATRIX_URL: http://127.0.0.1:6167
+      HICLAW_MATRIX_E2EE: "0"
+      HICLAW_MINIO_ENDPOINT: http://127.0.0.1:9000
+      HICLAW_FS_ENDPOINT: http://127.0.0.1:9000
+      HICLAW_FS_BUCKET: hiclaw-storage
+      HICLAW_STORAGE_PREFIX: hiclaw/hiclaw-storage
+      HICLAW_CONTROLLER_URL: http://awakening-m4-controller:8090
+      HICLAW_AI_GATEWAY_URL: http://host.docker.internal:18190
+      HICLAW_EMBEDDING_MODEL: ""
+      HICLAW_CMS_TRACES_ENABLED: "false"
+      HICLAW_CMS_METRICS_ENABLED: "false"
+      HICLAW_LANGUAGE: zh
+      TZ: Asia/Shanghai
+    dns:
+      - 127.0.0.1
+    ports:
+      - "127.0.0.1:18180:8080"
+      - "127.0.0.1:18188:8088"
+    volumes:
+      - awakening-m4-controller-data:/data
+    networks:
+      awakening-m4-net:
+        aliases:
+          - matrix-m4.local
+          - matrix-local.hiclaw.io
+          - aigw-local.hiclaw.io
+          - fs-local.hiclaw.io
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          curl -fsS http://127.0.0.1:8090/healthz
+          && curl -fsS http://127.0.0.1:6167/_tuwunel/server_version
+          && curl -fsS http://127.0.0.1:9000/minio/health/live
+          && curl -fsS http://127.0.0.1:8080/status
+      interval: 5s
+      timeout: 4s
+      retries: 36
+      start_period: 30s
+    restart: "no"
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+
+volumes:
+  awakening-m4-controller-data:
+    name: awakening-m4-controller-data
+  awakening-m4-manager-workspace:
+    name: awakening-m4-manager-workspace
+
+networks:
+  awakening-m4-net:
+    name: awakening-m4-net
+    driver: bridge
+    internal: false
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "false"

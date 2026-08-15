@@ -1,0 +1,21 @@
+{
+  "program_id": "10000000-0000-4000-8000-000000000001",
+  "state_version": 2,
+  "task": {
+    "task_id": "30000000-0000-4000-8000-000000000001",
+    "task_version": 1,
+    "title": "Create one deterministic workflow test"
+  },
+  "criteria": [
+    {
+      "criterion_id": "criterion-001",
+      "statement": "The test has a fixed input and an asserted expected result."
+    }
+  ],
+  "evidence_refs": [
+    {
+      "evidence_item_id": "40000000-0000-4000-8000-000000000001",
+      "object_ref_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ]
+}

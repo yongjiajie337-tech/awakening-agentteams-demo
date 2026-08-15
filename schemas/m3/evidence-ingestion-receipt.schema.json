@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m3/evidence-ingestion-receipt.schema.json",
+  "title": "M3 EvidenceIngestionReceipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["receipt_id", "program_id", "job_id", "claim_id", "verified_object_ref", "raw_sha256", "byte_size", "format_name", "media_type", "policy_version", "checker_version", "findings", "export_safe", "issued_by_principal_id", "issued_at"],
+  "properties": {
+    "receipt_id": {"type": "string", "format": "uuid"},
+    "program_id": {"type": "string", "format": "uuid"},
+    "job_id": {"type": "string", "format": "uuid"},
+    "claim_id": {"type": "string", "format": "uuid"},
+    "verified_object_ref": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "raw_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "byte_size": {"type": "integer", "minimum": 1, "maximum": 65536},
+    "format_name": {"const": "txt"},
+    "media_type": {"const": "text/plain; charset=utf-8"},
+    "policy_version": {"type": "string", "minLength": 1, "maxLength": 128},
+    "checker_version": {"type": "string", "minLength": 1, "maxLength": 128},
+    "findings": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "export_safe": {"const": true},
+    "issued_by_principal_id": {"type": "string", "minLength": 1, "maxLength": 255},
+    "issued_at": {"type": "string", "format": "date-time"}
+  }
+}

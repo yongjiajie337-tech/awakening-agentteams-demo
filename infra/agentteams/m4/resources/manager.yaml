@@ -1,0 +1,15 @@
+apiVersion: hiclaw.io/v1beta1
+kind: Manager
+metadata:
+  name: default
+spec:
+  model: qwen3.7-flash-2026-07-15
+  runtime: openclaw
+  image: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/hiclaw-manager@sha256:3a77482fb11472ab05f85ba5d60cbc0df8d66046aa9f63b9cf99f16d87852921
+  state: Running
+  skills: []
+  mcpServers: []
+  config:
+    heartbeatInterval: 0m
+    workerIdleTimeout: 720m
+    notifyChannel: admin-dm

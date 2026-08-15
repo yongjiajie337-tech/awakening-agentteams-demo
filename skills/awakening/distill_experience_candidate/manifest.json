@@ -1,0 +1,40 @@
+{
+  "skill_name": "distill_experience_candidate",
+  "type": "learning",
+  "scenario": "Distill deidentified run evidence into a staged ExperienceCandidateProposal after the M6 review and publication boundary exists.",
+  "input_params": {
+    "schema": "schemas/m4/skills/distill_experience_candidate.input.schema.json",
+    "required": ["program_id", "run_id", "trace_refs", "outcome", "error_refs"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/distill_experience_candidate.output.schema.json",
+    "semantics": "M4 returns a fixed prerequisite refusal and creates, stages, or publishes nothing."
+  },
+  "invocation_condition": {
+    "trusted_role": "role_project_architect",
+    "full_condition": "Run ended and trusted M6 ExperienceCandidate staging is available.",
+    "m4_condition": "fail_closed_missing_m6_staging"
+  },
+  "dependent_tool_system": {
+    "full_operation": ["Trusted Trace", "State MCP staging", "Human review", "Isolated RAG publication"],
+    "m4_boundary": "M6 staging, review, and publication dependencies are unavailable."
+  },
+  "failure_handling": {
+    "missing_prerequisite": "Refuse before model or tool invocation.",
+    "insufficient_evidence": "Create no partial candidate.",
+    "untrusted_deidentification": "Do not read, retain, stage, or publish source content."
+  },
+  "permission_safety": {
+    "allowed_agent": "role_project_architect",
+    "trusted_identity_source": "server-derived runtime principal",
+    "rules": [
+      "Never publish or write to RAG in M4.",
+      "Never include direct identity or secrets.",
+      "Never bypass State Service staging or human review."
+    ]
+  },
+  "reuse_value": [
+    "Controlled lessons-learned research",
+    "Future reviewed experience reuse"
+  ]
+}

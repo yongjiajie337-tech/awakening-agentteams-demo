@@ -1,0 +1,12 @@
+# Fully resolved for the reviewed Windows / CPython 3.12 environment.
+# Install only from an approved package index or a pre-populated wheel cache.
+attrs==26.1.0
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+psycopg==3.3.4
+psycopg-binary==3.3.4
+referencing==0.37.0
+rpds-py==2026.6.3
+typing_extensions==4.16.0
+tzdata==2026.3
+

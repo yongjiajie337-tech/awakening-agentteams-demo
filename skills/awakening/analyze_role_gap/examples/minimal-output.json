@@ -1,0 +1,15 @@
+{
+  "proposal_type": "gap_assessment",
+  "program_id": "10000000-0000-4000-8000-000000000001",
+  "base_state_version": 1,
+  "gaps": [
+    {
+      "gap_id": "gap-001",
+      "requirement": "Build reproducible tests for an agent workflow.",
+      "current_evidence_fact_ids": ["fact-001"],
+      "status": "gap",
+      "reason": "One unit test does not yet demonstrate a reproducible workflow test suite."
+    }
+  ],
+  "unable_to_determine": []
+}

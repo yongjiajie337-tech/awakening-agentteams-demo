@@ -1,0 +1,21 @@
+{
+  "program_id": "10000000-0000-4000-8000-000000000001",
+  "state_version": 1,
+  "role_facts": [
+    {
+      "source_ref": "synthetic-role-source:jd-001",
+      "requirement": "Build reproducible tests for an agent workflow."
+    }
+  ],
+  "user_facts": [
+    {
+      "fact_id": "fact-001",
+      "statement": "The synthetic candidate has written one Python unit test.",
+      "confirmed": true
+    }
+  ],
+  "constraints": {
+    "duration_weeks": 4,
+    "weekly_hours": 5
+  }
+}

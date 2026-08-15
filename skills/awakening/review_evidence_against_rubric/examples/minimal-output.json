@@ -1,0 +1,20 @@
+{
+  "output_type": "reviewer_contract_smoke",
+  "reviewer_mode": "contract_smoke",
+  "package_id": "50000000-0000-4000-8000-000000000001",
+  "package_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "context_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "rubric_version": "synthetic-rubric-v1",
+  "observations": [
+    {
+      "criterion_id": "criterion-001",
+      "status": "contract_shape_supported",
+      "evidence_fact_ids": ["evidence-fact-001"],
+      "reason": "The fixed package contains the fact required by the synthetic criterion."
+    }
+  ],
+  "missing_package_facts": [],
+  "business_evaluation": false,
+  "verified_claim_created": false,
+  "limitations": ["not_business_evaluation", "m5_review_dispatch_gate_not_implemented"]
+}

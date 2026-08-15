@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m3/evidence.ingest_job.finalize.payload.schema.json",
+  "title": "M3 evidence.ingest_job.finalize payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["job_id", "expected_ingest_job_version"],
+  "properties": {
+    "job_id": {"type": "string", "format": "uuid"},
+    "expected_ingest_job_version": {"type": "integer", "minimum": 1}
+  }
+}

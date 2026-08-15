@@ -1,0 +1,27 @@
+{
+  "skill_name": "coach_task_submission",
+  "type": "coaching",
+  "scenario": "Compare a fixed synthetic task submission's registered evidence references with explicit acceptance criteria.",
+  "input_params": {
+    "schema": "schemas/m4/skills/coach_task_submission.input.schema.json",
+    "required": ["program_id", "state_version", "task", "criteria", "evidence_refs"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/coach_task_submission.output.schema.json",
+    "business_effect": "non_authoritative_feedback"
+  },
+  "invocation_condition": "Only execution_evidence_coach for the M4 representative call on a version-bound synthetic task.",
+  "dependent_tool_system": ["M4 Skill registry", "M4 Model Gateway", "registered evidence references"],
+  "failure_handling": {
+    "mode": "fail_closed",
+    "conditions": ["schema_invalid", "evidence_ref_unknown", "criteria_missing", "version_missing"],
+    "fallback": "unverifiable_feedback"
+  },
+  "permission_safety": {
+    "allowed_agent": "execution_evidence_coach",
+    "direct_business_write": false,
+    "evidence_certification": false,
+    "arbitrary_object_read": false
+  },
+  "reuse_value": "Reusable criterion-to-evidence coaching contract."
+}

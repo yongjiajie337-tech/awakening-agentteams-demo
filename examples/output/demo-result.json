@@ -1,0 +1,64 @@
+{
+  "schema_version": "awakening.agentteams.demo.sample-output.v1",
+  "sample_only": true,
+  "contains_real_event_ids": false,
+  "contains_real_process_ids": false,
+  "contains_secret_material": false,
+  "status": "completed",
+  "topology": {
+    "manager_count": 1,
+    "worker_count": 3,
+    "successful_workers": 3
+  },
+  "manager_control_plane": {
+    "mode": "deterministic_policy_and_contract",
+    "model_autonomous_routing": false,
+    "manager_model_calls": 0
+  },
+  "worker_results": [
+    {
+      "role": "role_project_architect",
+      "skill": "analyze_role_gap",
+      "activation": "representative_live_call",
+      "status": "completed",
+      "result_summary": "A scoped role-gap analysis was returned."
+    },
+    {
+      "role": "execution_evidence_coach",
+      "skill": "coach_task_submission",
+      "activation": "representative_live_call",
+      "status": "completed",
+      "result_summary": "Evidence gaps and next actions were returned."
+    },
+    {
+      "role": "independent_quality_reviewer",
+      "skill": "review_evidence_against_rubric",
+      "activation": "contract_smoke_live_call",
+      "execution_mode": "no_tool_contract_smoke",
+      "tool_calls": 0,
+      "formal_business_evaluation": false,
+      "verified_claim_created": false,
+      "status": "completed",
+      "result_summary": "A no-tool contract-smoke response was returned; this is not a formal business evaluation."
+    }
+  ],
+  "provider_projection": {
+    "configured_total_worker_call_cap": 3,
+    "configured_inflight_call_cap": 3,
+    "calls_started": 3,
+    "calls_succeeded": 3,
+    "calls_failed": 0,
+    "manager_model_calls": 0,
+    "provider_retries": 0,
+    "hidden_retries": 0,
+    "observed_peak_inflight": 3
+  },
+  "matrix_projection": {
+    "request_accepted": 1,
+    "worker_dispatched": 3,
+    "worker_completed": 3,
+    "summary_completed": 1,
+    "total_events": 8
+  },
+  "evidence_note": "This is a format example, not run evidence. See evidence/run-a and evidence/run-b for sanitized, hash-bound real-run projections."
+}

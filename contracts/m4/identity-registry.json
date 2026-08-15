@@ -1,0 +1,74 @@
+{
+  "contract_version": "m4",
+  "registry_version": "1.0.0",
+  "identity_count": 4,
+  "official_field_count": 8,
+  "official_fields": [
+    "name",
+    "role",
+    "capabilities",
+    "inputs",
+    "outputs",
+    "dependencies",
+    "decision_boundary",
+    "trace"
+  ],
+  "identities": [
+    {
+      "name": "awakening_program_manager",
+      "version": "1.0.0",
+      "definition": "agents/m4/awakening_program_manager/identity.json",
+      "program_role": "manager",
+      "state_mcp_methods": [
+        "get_snapshot",
+        "get_command_status",
+        "apply_authorized_change"
+      ],
+      "allowed_skills": [
+        "apply_authorized_change"
+      ],
+      "tool_mode": "restricted_state_mcp"
+    },
+    {
+      "name": "role_project_architect",
+      "version": "1.0.0",
+      "definition": "agents/m4/role_project_architect/identity.json",
+      "program_role": "architect",
+      "state_mcp_methods": [
+        "submit_proposal",
+        "get_command_status"
+      ],
+      "allowed_skills": [
+        "analyze_role_gap",
+        "design_evidence_project",
+        "build_versioned_plan",
+        "propose_replan_under_constraints",
+        "distill_experience_candidate"
+      ],
+      "tool_mode": "proposal_only_state_mcp"
+    },
+    {
+      "name": "execution_evidence_coach",
+      "version": "1.0.0",
+      "definition": "agents/m4/execution_evidence_coach/identity.json",
+      "program_role": "coach",
+      "state_mcp_methods": [],
+      "allowed_skills": [
+        "coach_task_submission",
+        "generate_evidence_bound_materials"
+      ],
+      "tool_mode": "no_state_write_tool"
+    },
+    {
+      "name": "independent_quality_reviewer",
+      "version": "1.0.0",
+      "definition": "agents/m4/independent_quality_reviewer/identity.json",
+      "program_role": null,
+      "state_mcp_methods": [],
+      "allowed_skills": [
+        "review_evidence_against_rubric"
+      ],
+      "tool_mode": "no_tools_contract_smoke"
+    }
+  ]
+}

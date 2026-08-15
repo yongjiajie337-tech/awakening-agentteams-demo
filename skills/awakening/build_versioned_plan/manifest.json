@@ -1,0 +1,27 @@
+{
+  "skill_name": "build_versioned_plan",
+  "type": "planning",
+  "scenario": "Create a version-bound PlanVersionProposal from one selected synthetic project and explicit ordered tasks.",
+  "input_params": {
+    "schema": "schemas/m4/skills/build_versioned_plan.input.schema.json",
+    "required": ["program_id", "base_state_version", "base_plan_version_id", "selected_project", "duration_weeks", "tasks"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/build_versioned_plan.output.schema.json",
+    "business_effect": "proposal_only"
+  },
+  "invocation_condition": "Only role_project_architect after authorized project selection; contract-only in M4.",
+  "dependent_tool_system": ["M4 Skill registry", "M4 State MCP proposal boundary"],
+  "failure_handling": {
+    "mode": "fail_closed",
+    "conditions": ["schema_invalid", "duplicate_task", "dependency_invalid", "stale_base"],
+    "fallback": "no_proposal"
+  },
+  "permission_safety": {
+    "allowed_agent": "role_project_architect",
+    "direct_business_write": false,
+    "plan_activation": false,
+    "approval_authority": false
+  },
+  "reuse_value": "Reusable version-bound ordered-task plan proposal contract."
+}

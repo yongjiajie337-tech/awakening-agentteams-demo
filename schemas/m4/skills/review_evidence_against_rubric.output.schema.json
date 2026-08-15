@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/skills/review_evidence_against_rubric.output.schema.json",
+  "title": "review_evidence_against_rubric output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "output_type",
+    "reviewer_mode",
+    "package_id",
+    "package_sha256",
+    "context_sha256",
+    "rubric_version",
+    "observations",
+    "missing_package_facts",
+    "business_evaluation",
+    "verified_claim_created",
+    "limitations"
+  ],
+  "properties": {
+    "output_type": {"const": "reviewer_contract_smoke"},
+    "reviewer_mode": {"const": "contract_smoke"},
+    "package_id": {"type": "string", "format": "uuid"},
+    "package_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "context_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "rubric_version": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"},
+    "observations": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["criterion_id", "status", "evidence_fact_ids", "reason"],
+        "properties": {
+          "criterion_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"},
+          "status": {"enum": ["contract_shape_supported", "missing_package_fact", "unable_to_determine"]},
+          "evidence_fact_ids": {
+            "type": "array",
+            "maxItems": 64,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"}
+          },
+          "reason": {"type": "string", "minLength": 1, "maxLength": 1000}
+        }
+      }
+    },
+    "missing_package_facts": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
+    },
+    "business_evaluation": {"const": false},
+    "verified_claim_created": {"const": false},
+    "limitations": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "not_business_evaluation",
+          "m5_review_dispatch_gate_not_implemented"
+        ]
+      },
+      "allOf": [
+        {"contains": {"const": "not_business_evaluation"}},
+        {"contains": {"const": "m5_review_dispatch_gate_not_implemented"}}
+      ]
+    }
+  }
+}

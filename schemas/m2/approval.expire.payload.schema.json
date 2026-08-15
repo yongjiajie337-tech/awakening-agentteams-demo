@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m2/approval.expire.payload.schema.json",
+  "title": "approval.expire payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["approval_request_id"],
+  "properties": {
+    "approval_request_id": {"type": "string", "format": "uuid"}
+  }
+}

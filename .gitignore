@@ -1,0 +1,17 @@
+# Local-only runtime and credential material must never enter the review package.
+.env*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+tmp/
+*.pid
+*.log
+*.sqlite*
+*.db
+
+# Locally generated archives and recordings are delivered separately.
+*.zip
+*.mp4
+*.mkv
+*.mov

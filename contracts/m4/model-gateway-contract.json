@@ -1,0 +1,35 @@
+{
+  "contract_version": "m4-model-gateway-v1",
+  "provider_key_holder": "awakening-m4-model-gateway",
+  "precall_order": [
+    "runtime_principal_authorized",
+    "runtime_body_and_tool_allowlist_authorized",
+    "runtime_config_snapshot_committed",
+    "model_budget_reservation_committed",
+    "provider_alias_bound",
+    "exact_wire_document_built",
+    "context_manifest_committed_and_hash_bound",
+    "provider_transport"
+  ],
+  "postcall_order": [
+    "trusted_provider_usage_receipt",
+    "state_service_usage_settlement",
+    "skill_invocation_receipt"
+  ],
+  "fail_closed_zero_provider_calls": [
+    "runtime_principal_denied",
+    "runtime_body_or_tool_denied",
+    "skill_not_allowed",
+    "snapshot_missing_or_uncommitted",
+    "reservation_missing_or_uncommitted",
+    "manifest_missing_pending_or_mismatched",
+    "provider_alias_mismatch"
+  ],
+  "provider_transport_unknown_usage": "state_service_conservative_settlement",
+  "provider_redirects_allowed": false,
+  "provider_mutates_hashed_wire_document": false,
+  "agent_provider_key_access": false,
+  "agent_direct_provider_access": false,
+  "context_manifest_retains_full_input": false,
+  "m7_budget_lease_ttl_and_recovery": "not_implemented_in_m4"
+}

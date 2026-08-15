@@ -1,0 +1,59 @@
+{
+  "schema_version": "awakening.agentteams.demo.sample-input.v1",
+  "sample_only": true,
+  "contains_personal_data": false,
+  "consumed_automatically": false,
+  "purpose": "Human-readable illustration of the fixed synthetic Demo request; the live reference lifecycle generates fresh identifiers.",
+  "scenario_context": {
+    "target_user": "A fictional job seeker targeting an AI Agent role.",
+    "problem": "Turn a role requirement and confirmed experience facts into a reviewable evidence-building plan.",
+    "demo_boundary": "Fixed synthetic engineering evidence only; no real candidate, hiring, or employment outcome."
+  },
+  "manager_request_template": "Awakening AgentTeams Demo | demo_request_id=<fresh-demo-request-id> | demo_run_id=<fresh-core-run-id> | fixed synthetic job package | Manager coordinates Architect, Coach, Reviewer.",
+  "synthetic_job": {
+    "target": "Create a reviewable evidence plan for a fictional AI Agent role application.",
+    "manager": "Use a deterministic role-to-Skill map to coordinate three role-bound workers and publish a completion projection; no LLM-autonomous routing.",
+    "workers": [
+      {
+        "role": "role_project_architect",
+        "skill": "analyze_role_gap",
+        "expected_contribution": "Analyze role requirements and project scope."
+      },
+      {
+        "role": "execution_evidence_coach",
+        "skill": "coach_task_submission",
+        "expected_contribution": "Check whether execution evidence is sufficient."
+      },
+      {
+        "role": "independent_quality_reviewer",
+        "skill": "review_evidence_against_rubric",
+        "expected_contribution": "Perform a no-tool contract smoke over one fixed criterion and its synthetic evidence facts; not a formal business evaluation."
+      }
+    ]
+  },
+  "constraints": {
+    "fixed_synthetic_data": true,
+    "provider_calls_max": 3,
+    "provider_retries": 0,
+    "manager_model_calls": 0,
+    "result_must_be_projected_to_matrix": true,
+    "business_state_changed": false,
+    "rag_enabled": false,
+    "context_mechanism": "Frozen trusted packages, shared state projection, and observable ID/hash-bound events."
+  },
+  "migration_boundary": {
+    "reusable": [
+      "Manager/Worker topology",
+      "identity and permission boundaries",
+      "structured Skill handoffs",
+      "state and audit contracts"
+    ],
+    "must_replace": [
+      "domain facts and data authorization",
+      "rubric and evidence semantics",
+      "Skill input/output schemas",
+      "business-write approval policy"
+    ],
+    "not_claimed": "No non-career deployment is proven by this sample."
+  }
+}

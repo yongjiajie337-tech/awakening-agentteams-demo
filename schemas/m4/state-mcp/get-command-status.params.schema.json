@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/state-mcp/get-command-status.params.schema.json",
+  "title": "M4 State MCP get_command_status parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["program_id", "command_id"],
+  "properties": {
+    "program_id": {"type": "string", "format": "uuid"},
+    "command_id": {"type": "string", "format": "uuid"}
+  }
+}

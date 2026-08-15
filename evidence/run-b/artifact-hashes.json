@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "evidence_profile": "sanitized-source-integrity-anchors",
+  "outer_run_id": "3f481126-507b-41b9-8be6-01f4a1b17f2a",
+  "algorithm": "sha256",
+  "source_artifacts": {
+    "result.json": "99637380c83ef33d4c081eebfc88a37136527fe55829485654c55f794d3b9f91",
+    "matrix-events.jsonl": "142c8b8225d0eda8535e816bb8c38ae16165be82ce651ff2ec419762da0d6f93",
+    "lifecycle.jsonl": "7666a33f18b003e997c443098b883884ce5b4f909bef0fc7e4de1e78495b5262",
+    "demo-live-gateway.stdout.log": "118cab238ba22604a78fbee83568cc2467b3ea4438a442e8615aae37d0434dc1",
+    "demo-live-gateway.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-chain.stdout.log": "472a549e3a4f304a8ee843b2f9acf91e2705ebfdce0389a7140e3cc878ba393a",
+    "live-gateway-config.json": "942994fdc090d1a3a99b32703aa52b713dda50c6872f57c7e549fadb109b2135",
+    "packages/role_project_architect.json": "cbe623150b5e1107f8d099111393de608ff4fc3123bea33b71d41e3f15334c4c",
+    "packages/execution_evidence_coach.json": "9cccf2a43c467b5998e37398a19f69b9e80763cdf332ed2c1913f261eeeeb216",
+    "packages/independent_quality_reviewer.json": "d32a982417182ad80ba7e3cea773ae0cf96cb33aa2a6a88fb6e2313444874616"
+  },
+  "projection_artifacts": {
+    "summary.json": "d1fe5dc843d01b87eae82abdffcd9e98193d163fe77614bdd41384155b7916c2",
+    "provider-events.jsonl": "04773288b8faa823f4a02a921bba986e16a5c762e7a13a4970c30804a4db7a18",
+    "matrix-flow.jsonl": "33cec15214fa2ad80c8bb4ab19faa8f8067de61d4f7a49fa54fbaaaf04527d3a",
+    "lifecycle-flow.jsonl": "73dafc9a90c78578f21c84e7185f273f0a6f4d7f65e34211415739b7e9382530",
+    "outputs/role_project_architect.json": "420f6a374f38c4e9d2d821da3fc9296e2dc78f92f399428ccb7bcca65b7cc445",
+    "outputs/execution_evidence_coach.json": "b25f8825b58003c5e40a4fe93662d6f3f1eedd2701f650c7c55d7741f04b2444",
+    "outputs/independent_quality_reviewer.json": "dddfbd69483021cae5a2cecfd65234e61a635804c545f00c954b68b899f76547"
+  },
+  "projection_policy": "Only canonical calls[].output objects are included; prompts, message bodies, event IDs, room IDs, PIDs, absolute paths, baselines, full configuration, logs, and secret material remain excluded."
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/skill-invocation-receipt.schema.json",
+  "title": "M4 SkillInvocationReceipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skill_invocation_receipt_id",
+    "program_id",
+    "run_id",
+    "model_call_id",
+    "context_manifest_id",
+    "reservation_id",
+    "agent_identity_id",
+    "agent_identity_version",
+    "skill_name",
+    "skill_version",
+    "input_sha256",
+    "output_sha256",
+    "status"
+  ],
+  "properties": {
+    "skill_invocation_receipt_id": {"type": "string", "format": "uuid"},
+    "program_id": {"type": "string", "format": "uuid"},
+    "run_id": {"type": "string", "format": "uuid"},
+    "model_call_id": {"type": "string", "format": "uuid"},
+    "context_manifest_id": {"type": "string", "format": "uuid"},
+    "reservation_id": {"type": "string", "format": "uuid"},
+    "agent_identity_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$"},
+    "agent_identity_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "skill_name": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$"},
+    "skill_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "output_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"enum": ["committed", "rejected"]}
+  }
+}
+

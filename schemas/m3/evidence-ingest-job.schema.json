@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m3/evidence-ingest-job.schema.json",
+  "title": "M3 EvidenceIngestJob projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["job_id", "program_id", "source_type", "policy_version", "status", "ingest_job_version"],
+  "properties": {
+    "job_id": {"type": "string", "format": "uuid"},
+    "program_id": {"type": "string", "format": "uuid"},
+    "source_type": {"const": "upload"},
+    "policy_version": {"type": "string"},
+    "status": {"enum": ["created", "claimed", "finalized", "rejected"]},
+    "ingest_job_version": {"type": "integer", "minimum": 1},
+    "claim_id": {"type": ["string", "null"], "format": "uuid"},
+    "receipt_id": {"type": ["string", "null"], "format": "uuid"},
+    "evidence_item_id": {"type": ["string", "null"], "format": "uuid"},
+    "server_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "byte_size": {"type": ["integer", "null"], "minimum": 1, "maximum": 65536},
+    "rejection_code": {"type": ["string", "null"]}
+  }
+}

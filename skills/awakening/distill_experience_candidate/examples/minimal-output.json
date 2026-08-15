@@ -1,0 +1,9 @@
+{
+  "status": "refused",
+  "reason_code": "M6_EXPERIENCE_STAGING_UNAVAILABLE",
+  "candidate_created": false,
+  "staged": false,
+  "published_to_rag": false,
+  "source_data_retained": false,
+  "next_action": "defer_to_m6"
+}

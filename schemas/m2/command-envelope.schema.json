@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m2/command-envelope.schema.json",
+  "title": "M2 Internal CommandEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "command_id",
+    "idempotency_key",
+    "program_id",
+    "command_type",
+    "source_channel",
+    "payload",
+    "trusted_principal"
+  ],
+  "properties": {
+    "command_id": {"$ref": "#/$defs/uuid"},
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "program_id": {"$ref": "#/$defs/uuid"},
+    "command_type": {
+      "enum": [
+        "program.create",
+        "state.proposal.submit",
+        "human_decision.record",
+        "state.proposal.apply",
+        "approval.expire"
+      ]
+    },
+    "source_channel": {"enum": ["web", "mcp", "internal"]},
+    "expected_state_version": {"type": "integer", "minimum": 0},
+    "base_plan_version_id": {"$ref": "#/$defs/uuid"},
+    "payload": {"type": "object"},
+    "traceparent": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+    },
+    "trusted_principal": {"$ref": "#/$defs/trustedPrincipal"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"command_type": {"const": "program.create"}},
+        "required": ["command_type"]
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {"required": ["expected_state_version"]},
+            {"required": ["base_plan_version_id"]}
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command_type": {
+            "enum": ["state.proposal.submit", "state.proposal.apply"]
+          }
+        },
+        "required": ["command_type"]
+      },
+      "then": {
+        "required": ["expected_state_version", "base_plan_version_id"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command_type": {
+            "enum": ["human_decision.record", "approval.expire"]
+          }
+        },
+        "required": ["command_type"]
+      },
+      "then": {
+        "required": ["expected_state_version"],
+        "not": {"required": ["base_plan_version_id"]}
+      }
+    }
+  ],
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "trustedPrincipal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principal_id", "principal_type", "scopes", "program_scope"],
+      "properties": {
+        "principal_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "principal_type": {"enum": ["user", "agent", "service", "system"]},
+        "scopes": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 128},
+          "uniqueItems": true,
+          "maxItems": 64
+        },
+        "program_scope": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/uuid"},
+          "uniqueItems": true,
+          "maxItems": 256
+        },
+        "auth_context_id": {"type": "string", "minLength": 1, "maxLength": 256}
+      }
+    }
+  }
+}

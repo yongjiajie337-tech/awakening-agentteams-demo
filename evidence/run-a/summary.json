@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "evidence_profile": "sanitized-success-summary",
+  "outer_run_id": "eccfaadd-dd07-42aa-ae41-68ea7c97d65b",
+  "core_run_id": "55dfc571-4cae-4483-b98e-8570bf5f9760",
+  "demo_request_id": "9d9ea216-66e2-405c-a63f-64cf0570bb3a",
+  "status": "completed",
+  "topology": "1-manager-3-workers",
+  "worker_roles": [
+    "role_project_architect",
+    "execution_evidence_coach",
+    "independent_quality_reviewer"
+  ],
+  "workers_expected": 3,
+  "workers_completed": 3,
+  "worker_failures": 0,
+  "provider_begin": 3,
+  "provider_succeeded": 3,
+  "provider_failed": 0,
+  "provider_end": 3,
+  "manager_provider_calls": 0,
+  "provider_retries": 0,
+  "hidden_retries": 0,
+  "max_inflight": 3,
+  "input_tokens": 28498,
+  "output_tokens": 1844,
+  "total_tokens": 30342,
+  "cost_microcny": 7176,
+  "cost_cny": "0.007176",
+  "cost_basis": "local-gateway-calculation-not-remote-invoice",
+  "matrix_event_count": 8,
+  "matrix_phase_counts": {
+    "request-accepted": 1,
+    "worker-dispatched": 3,
+    "worker-completed": 3,
+    "summary-completed": 1
+  },
+  "business_state_changed": false,
+  "restore_completed": true,
+  "restored_container_count": 8,
+  "listener_count_after_restore": 0,
+  "source_artifact_sha256": {
+    "result": "07bf221e158712759f1293982399bcb8334493bdb9fe33bdb1c997f29ac8d52c",
+    "matrix_events": "8de491e1971c0aa6513e44642ded1edebff0de0c7435f4f7abd631e237facd10",
+    "lifecycle": "4535c6df2de15c93728d4764f6d375365d1d79a3bc43467bc75eb7a0e3389215",
+    "gateway_stdout": "1a3e71b17db100d17aa4bf3023590120be0a431a33f178aaf28b5a3c40ae6b1f",
+    "run_chain_stdout": "66513025fa5dc55327a145474d758f22560d72777965ab917029f4e9932019a5",
+    "live_gateway_config": "983360f3851fd6e8f3ed9dd8a1bc64ad0691c7763c35d0e5b3ecdd644aba89fc",
+    "package_role_project_architect": "4c3b9b51e5e2e4a4e2c23b12f2bbf81ef8f7826dd5d7165dde297737b663d2ee",
+    "package_execution_evidence_coach": "22c330c34b8572dc979a182b85c05bf6123118ee411c27f0fffba78033bcc540",
+    "package_independent_quality_reviewer": "098213e58cb619526cb5a27c0c2ffb04ad776080027f6dc4cfc056c5355578fe"
+  }
+}
+

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/state-mcp/submit-proposal.params.schema.json",
+  "title": "M4 State MCP submit_proposal parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["program_id", "base_version", "proposal_payload", "idempotency_key"],
+  "properties": {
+    "program_id": {"type": "string", "format": "uuid"},
+    "base_version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state_version", "plan_version_id"],
+      "properties": {
+        "state_version": {"type": "integer", "minimum": 0},
+        "plan_version_id": {"type": "string", "format": "uuid"}
+      }
+    },
+    "proposal_payload": {"type": "object"},
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "traceparent": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "proposal_id": "66666666-6666-4666-8666-666666666666",
+  "request_status": "rejected",
+  "applied": false,
+  "active_state_changed": false,
+  "state_version_unchanged": true,
+  "reason_code": "APPROVAL_REQUIRED",
+  "next_action": "request_human_decision"
+}

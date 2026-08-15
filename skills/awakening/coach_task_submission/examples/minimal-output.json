@@ -1,0 +1,18 @@
+{
+  "feedback_type": "coach_feedback",
+  "program_id": "10000000-0000-4000-8000-000000000001",
+  "base_state_version": 2,
+  "task_id": "30000000-0000-4000-8000-000000000001",
+  "task_version": 1,
+  "criterion_observations": [
+    {
+      "criterion_id": "criterion-001",
+      "evidence_item_ids": ["40000000-0000-4000-8000-000000000001"],
+      "status": "needs_more_evidence",
+      "reason": "The registered reference alone does not show the asserted expected result."
+    }
+  ],
+  "missing_evidence": ["A test output showing the expected assertion passed."],
+  "revision_suggestion": "Add the fixed expected result and preserve the test output as evidence.",
+  "certifies_completion": false
+}

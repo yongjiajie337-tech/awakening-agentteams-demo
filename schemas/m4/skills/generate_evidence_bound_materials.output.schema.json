@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/skills/generate_evidence_bound_materials.output.schema.json",
+  "title": "generate_evidence_bound_materials M4 refusal output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "reason_code",
+    "material_generated",
+    "artifact_created",
+    "facts_added",
+    "source_data_retained",
+    "next_action"
+  ],
+  "properties": {
+    "status": {"const": "refused"},
+    "reason_code": {"const": "ACTIVE_CLAIMS_UNAVAILABLE_IN_M4"},
+    "material_generated": {"const": false},
+    "artifact_created": {"const": false},
+    "facts_added": {"const": false},
+    "source_data_retained": {"const": false},
+    "next_action": {"const": "defer_until_active_claims_exist"}
+  }
+}

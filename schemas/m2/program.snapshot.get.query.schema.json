@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m2/program.snapshot.get.query.schema.json",
+  "title": "program.snapshot.get query",
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 0
+}

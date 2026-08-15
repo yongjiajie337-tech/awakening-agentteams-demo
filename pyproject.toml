@@ -1,0 +1,31 @@
+[project]
+name = "awakening-agentteams-demo-review-package"
+version = "1.0.2"
+description = "Dual-layer offline review and reference-environment reproduction package for the Awakening AgentTeams Demo"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { file = "LICENSE" }
+dependencies = [
+    "attrs==26.1.0",
+    "jsonschema==4.26.0",
+    "jsonschema-specifications==2025.9.1",
+    "psycopg==3.3.4",
+    "psycopg-binary==3.3.4",
+    "referencing==0.37.0",
+    "rpds-py==2026.6.3",
+    "typing_extensions==4.16.0",
+    "tzdata==2026.3",
+]
+
+[project.urls]
+Competition = "https://www.goaihz.com/tracks?track=infra"
+
+[tool.awakening.demo]
+package_mode = "dual-layer-review"
+offline_verification = true
+live_bootstrap = false
+reference_agentteams_version = "v1.1.2"
+manager_count = 1
+worker_count = 3
+manager_model_call_count = 0
+provider_retry_count = 0

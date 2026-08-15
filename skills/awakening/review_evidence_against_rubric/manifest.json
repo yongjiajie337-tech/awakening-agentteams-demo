@@ -1,0 +1,27 @@
+{
+  "skill_name": "review_evidence_against_rubric",
+  "type": "evaluation",
+  "scenario": "Run one M4 contract_smoke against a fixed synthetic closed package.",
+  "input_params": {
+    "schema": "schemas/m4/skills/review_evidence_against_rubric.input.schema.json",
+    "required": ["reviewer_mode", "package_kind", "package_id", "package_sha256", "context_sha256", "rubric_version", "criteria", "evidence_facts", "tools_allowed"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/review_evidence_against_rubric.output.schema.json",
+    "business_effect": "none_contract_smoke_only"
+  },
+  "invocation_condition": "Only independent_quality_reviewer in a fresh no-tool session with a fixed synthetic closed package.",
+  "dependent_tool_system": ["M4 Skill registry", "M4 Model Gateway"],
+  "failure_handling": {
+    "mode": "fail_closed_before_model",
+    "conditions": ["schema_invalid", "mode_not_contract_smoke", "tools_enabled", "package_not_synthetic_closed"],
+    "fallback": "no_output"
+  },
+  "permission_safety": {
+    "allowed_agent": "independent_quality_reviewer",
+    "tools_allowed": false,
+    "direct_business_write": false,
+    "formal_business_evaluation": false
+  },
+  "reuse_value": "Reusable closed no-tool Reviewer contract fixture."
+}

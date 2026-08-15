@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/runtime-config-snapshot.schema.json",
+  "title": "M4 RuntimeConfigSnapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "snapshot_id",
+    "program_id",
+    "run_id",
+    "provider_alias",
+    "model_id",
+    "parameters",
+    "config_sha256",
+    "max_calls",
+    "max_input_tokens_per_call",
+    "max_output_tokens_per_call",
+    "max_cost_microunits_per_call",
+    "max_total_input_tokens",
+    "max_total_output_tokens",
+    "max_total_cost_microunits",
+    "created_by_principal_id",
+    "created_at"
+  ],
+  "properties": {
+    "snapshot_id": {"type": "string", "format": "uuid"},
+    "program_id": {"type": "string", "format": "uuid"},
+    "run_id": {"type": "string", "format": "uuid"},
+    "provider_alias": {"const": "aliyun-model-studio-official"},
+    "model_id": {"const": "qwen3.7-flash-2026-07-15"},
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "temperature",
+        "seed",
+        "enable_thinking",
+        "response_format"
+      ],
+      "properties": {
+        "temperature": {"const": 0.01},
+        "seed": {"const": 0},
+        "enable_thinking": {"const": false},
+        "response_format": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": {"const": "json_object"}
+          }
+        }
+      }
+    },
+    "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "max_calls": {"type": "integer", "minimum": 1},
+    "max_input_tokens_per_call": {"type": "integer", "minimum": 1},
+    "max_output_tokens_per_call": {"type": "integer", "minimum": 1},
+    "max_cost_microunits_per_call": {"type": "integer", "minimum": 1},
+    "max_total_input_tokens": {"type": "integer", "minimum": 1},
+    "max_total_output_tokens": {"type": "integer", "minimum": 1},
+    "max_total_cost_microunits": {"type": "integer", "minimum": 1},
+    "created_by_principal_id": {"type": "string", "minLength": 1, "maxLength": 255},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

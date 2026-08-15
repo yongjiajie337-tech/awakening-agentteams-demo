@@ -1,0 +1,27 @@
+{
+  "skill_name": "analyze_role_gap",
+  "type": "analysis",
+  "scenario": "Compare fixed synthetic role facts with confirmed synthetic user facts for the M4 Architect representative call.",
+  "input_params": {
+    "schema": "schemas/m4/skills/analyze_role_gap.input.schema.json",
+    "required": ["program_id", "state_version", "role_facts", "user_facts", "constraints"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/analyze_role_gap.output.schema.json",
+    "business_effect": "proposal_only"
+  },
+  "invocation_condition": "Only role_project_architect after an authoritative snapshot read and fixed synthetic input binding.",
+  "dependent_tool_system": ["M4 Skill registry", "M4 Model Gateway", "ProgramSnapshot fixture"],
+  "failure_handling": {
+    "mode": "fail_closed",
+    "conditions": ["schema_invalid", "source_missing", "fact_unconfirmed"],
+    "fallback": "no_proposal"
+  },
+  "permission_safety": {
+    "allowed_agent": "role_project_architect",
+    "read_only": true,
+    "direct_business_write": false,
+    "rag_enabled_in_m4": false
+  },
+  "reuse_value": "Reusable evidence-bound role-gap contract for authorized role packs."
+}

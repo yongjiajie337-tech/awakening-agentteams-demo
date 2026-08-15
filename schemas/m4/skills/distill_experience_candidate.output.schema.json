@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/skills/distill_experience_candidate.output.schema.json",
+  "title": "distill_experience_candidate M4 refusal output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "reason_code",
+    "candidate_created",
+    "staged",
+    "published_to_rag",
+    "source_data_retained",
+    "next_action"
+  ],
+  "properties": {
+    "status": {"const": "refused"},
+    "reason_code": {"const": "M6_EXPERIENCE_STAGING_UNAVAILABLE"},
+    "candidate_created": {"const": false},
+    "staged": {"const": false},
+    "published_to_rag": {"const": false},
+    "source_data_retained": {"const": false},
+    "next_action": {"const": "defer_to_m6"}
+  }
+}

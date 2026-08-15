@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m3/command-envelope.schema.json",
+  "title": "M3 Internal CommandEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "command_id", "idempotency_key", "program_id", "command_type",
+    "payload", "trusted_principal", "source_channel"
+  ],
+  "properties": {
+    "command_id": {"$ref": "#/$defs/uuid"},
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "program_id": {"$ref": "#/$defs/uuid"},
+    "command_type": {
+      "enum": [
+        "evidence.ingest_job.create",
+        "evidence.ingest_job.claim",
+        "evidence.ingest_job.finalize",
+        "evidence.ingest_job.reject"
+      ]
+    },
+    "payload": {"type": "object"},
+    "trusted_principal": {"$ref": "#/$defs/trustedPrincipal"},
+    "source_channel": {"enum": ["web", "mcp", "internal"]},
+    "traceparent": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+    },
+    "trusted_outbox_ref": {"$ref": "#/$defs/trustedOutboxRef"},
+    "trusted_receipt": {"$ref": "#/$defs/trustedReceipt"},
+    "trusted_rejection": {"$ref": "#/$defs/trustedRejection"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"command_type": {"const": "evidence.ingest_job.create"}}},
+      "then": {
+        "not": {
+          "anyOf": [
+            {"required": ["trusted_outbox_ref"]},
+            {"required": ["trusted_receipt"]},
+            {"required": ["trusted_rejection"]}
+          ]
+        }
+      }
+    },
+    {
+      "if": {"properties": {"command_type": {"const": "evidence.ingest_job.claim"}}},
+      "then": {
+        "required": ["trusted_outbox_ref"],
+        "not": {"anyOf": [{"required": ["trusted_receipt"]}, {"required": ["trusted_rejection"]}]}
+      }
+    },
+    {
+      "if": {"properties": {"command_type": {"const": "evidence.ingest_job.finalize"}}},
+      "then": {
+        "required": ["trusted_receipt"],
+        "not": {"anyOf": [{"required": ["trusted_outbox_ref"]}, {"required": ["trusted_rejection"]}]}
+      }
+    },
+    {
+      "if": {"properties": {"command_type": {"const": "evidence.ingest_job.reject"}}},
+      "then": {
+        "required": ["trusted_rejection"],
+        "not": {"anyOf": [{"required": ["trusted_outbox_ref"]}, {"required": ["trusted_receipt"]}]}
+      }
+    }
+  ],
+  "$defs": {
+    "uuid": {"type": "string", "format": "uuid"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "trustedPrincipal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principal_id", "principal_type", "scopes", "program_scope"],
+      "properties": {
+        "principal_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "principal_type": {"enum": ["user", "agent", "service", "system"]},
+        "scopes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "program_scope": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/uuid"}},
+        "auth_context_id": {"type": "string", "minLength": 1, "maxLength": 256}
+      }
+    },
+    "trustedOutboxRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outbox_event_id", "domain_event_id"],
+      "properties": {
+        "outbox_event_id": {"$ref": "#/$defs/uuid"},
+        "domain_event_id": {"$ref": "#/$defs/uuid"}
+      }
+    },
+    "trustedReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_id", "program_id", "job_id", "claim_id",
+        "verified_object_ref", "raw_sha256", "byte_size", "format_name",
+        "media_type", "policy_version", "checker_version", "findings",
+        "export_safe", "issued_by_principal_id", "issued_at"
+      ],
+      "properties": {
+        "receipt_id": {"$ref": "#/$defs/uuid"},
+        "program_id": {"$ref": "#/$defs/uuid"},
+        "job_id": {"$ref": "#/$defs/uuid"},
+        "claim_id": {"$ref": "#/$defs/uuid"},
+        "verified_object_ref": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "byte_size": {"type": "integer", "minimum": 1, "maximum": 65536},
+        "format_name": {"const": "txt"},
+        "media_type": {"const": "text/plain; charset=utf-8"},
+        "policy_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "checker_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "findings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 128}},
+        "export_safe": {"type": "boolean"},
+        "issued_by_principal_id": {"type": "string", "minLength": 1, "maxLength": 255},
+        "issued_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "trustedRejection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "program_id", "job_id", "claim_id", "rejection_code",
+        "policy_version", "checker_version", "findings",
+        "issued_by_principal_id", "rejected_at"
+      ],
+      "properties": {
+        "program_id": {"$ref": "#/$defs/uuid"},
+        "job_id": {"$ref": "#/$defs/uuid"},
+        "claim_id": {"$ref": "#/$defs/uuid"},
+        "rejection_code": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,127}$"},
+        "policy_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "checker_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "findings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 128}},
+        "issued_by_principal_id": {"type": "string", "minLength": 1, "maxLength": 255},
+        "rejected_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

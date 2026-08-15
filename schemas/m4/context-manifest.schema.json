@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/context-manifest.schema.json",
+  "title": "M4 ContextManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "context_manifest_id",
+    "program_id",
+    "run_id",
+    "model_call_id",
+    "runtime_config_snapshot_id",
+    "reservation_id",
+    "agent_identity_id",
+    "agent_identity_version",
+    "skill_name",
+    "skill_version",
+    "object_refs",
+    "exclusions",
+    "input_sha256",
+    "status"
+  ],
+  "properties": {
+    "context_manifest_id": {"type": "string", "format": "uuid"},
+    "program_id": {"type": "string", "format": "uuid"},
+    "run_id": {"type": "string", "format": "uuid"},
+    "model_call_id": {"type": "string", "format": "uuid"},
+    "runtime_config_snapshot_id": {"type": "string", "format": "uuid"},
+    "reservation_id": {"type": "string", "format": "uuid"},
+    "agent_identity_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$"},
+    "agent_identity_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "skill_name": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$"},
+    "skill_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "object_refs": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["object_type", "object_id", "object_version", "content_sha256"],
+        "properties": {
+          "object_type": {"type": "string", "minLength": 1, "maxLength": 64},
+          "object_id": {"type": "string", "minLength": 1, "maxLength": 128},
+          "object_version": {"type": "string", "minLength": 1, "maxLength": 64},
+          "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 128}
+    },
+    "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"const": "committed"}
+  }
+}
+

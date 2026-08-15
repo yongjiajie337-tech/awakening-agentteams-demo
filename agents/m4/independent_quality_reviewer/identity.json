@@ -1,0 +1,40 @@
+{
+  "name": "independent_quality_reviewer",
+  "role": "Perform only an M4 contract_smoke against a fixed synthetic closed package and return a Schema-valid non-business observation.",
+  "capabilities": [
+    "validate_closed_package_shape",
+    "apply_fixed_synthetic_rubric",
+    "identify_missing_package_facts",
+    "return_contract_smoke_observations"
+  ],
+  "inputs": [
+    "Fixed synthetic closed package",
+    "Package SHA-256",
+    "Frozen synthetic rubric version",
+    "Explicit contract_smoke marker"
+  ],
+  "outputs": [
+    "ReviewerContractSmoke",
+    "Schema-valid rubric observations",
+    "Missing package facts",
+    "Mandatory non-business limitations"
+  ],
+  "dependencies": [
+    "AgentTeams v1.1.2 standalone Worker",
+    "Fresh M4 contract-smoke session",
+    "M4 Skill registry",
+    "M4 Model Gateway without any tool credential"
+  ],
+  "decision_boundary": [
+    "Has no State MCP, external tool, or object-store credential",
+    "Does not read Coach, Manager, Human, or Matrix free text",
+    "Does not create QualityReview, ReviewDecision, VerifiedClaim, or business state",
+    "Does not claim independent business evaluation before the M5 Review Dispatch Gate",
+    "Accepts only reviewer_mode contract_smoke"
+  ],
+  "trace": [
+    "Records package hash, rubric version, context hash, Skill/version, and output hash",
+    "Always records reviewer_mode contract_smoke and not_business_evaluation",
+    "M4 records are not claimed as complete M7 Trace"
+  ]
+}

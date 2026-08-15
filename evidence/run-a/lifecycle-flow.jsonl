@@ -1,0 +1,10 @@
+{"schema_version":1,"sequence":1,"kind":"provider-transport-preflight","status":"completed","provider_model_request_sent":false,"system_network_modified":false}
+{"schema_version":1,"sequence":2,"kind":"preflight","status":"passed","listener_count":0,"exact_container_count":8}
+{"schema_version":1,"sequence":3,"kind":"prepare","status":"completed","core_run_id":"55dfc571-4cae-4483-b98e-8570bf5f9760","demo_request_id":"9d9ea216-66e2-405c-a63f-64cf0570bb3a"}
+{"schema_version":1,"sequence":4,"kind":"worker-gateway-credential-sync","status":"completed","role_count":2,"provider_call_count":0,"temporary_residue_count":0}
+{"schema_version":1,"sequence":5,"kind":"infrastructure","status":"ready","provider_call_count":0}
+{"schema_version":1,"sequence":6,"kind":"human-request","status":"captured","body_sha256":"e37c376b325a2ce676a03e2af26b9b6deb8b31f2334f590f4de5fcb8a1bb8d2a"}
+{"schema_version":1,"sequence":7,"kind":"demo-live-gateway","status":"started","provider_raw_response_persisted":false,"system_network_modified":false}
+{"schema_version":1,"sequence":8,"kind":"run-chain","status":"completed","exit_code":0,"hidden_retry_count":0,"projected_worker_event_count":6,"result_sha256":"07bf221e158712759f1293982399bcb8334493bdb9fe33bdb1c997f29ac8d52c"}
+{"schema_version":1,"sequence":9,"kind":"demo-live-gateway-and-state-mcp","status":"stopped"}
+{"schema_version":1,"sequence":10,"kind":"restore","status":"completed","listener_count":0,"exact_container_count":8}

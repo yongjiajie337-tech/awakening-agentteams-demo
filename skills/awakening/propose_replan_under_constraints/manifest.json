@@ -1,0 +1,47 @@
+{
+  "skill_name": "propose_replan_under_constraints",
+  "type": "planning",
+  "scenario": "Create bounded proposal-only recovery choices when a synthetic M4 contract fixture invalidates a current planning assumption.",
+  "input_params": {
+    "schema": "schemas/m4/skills/propose_replan_under_constraints.input.schema.json",
+    "required": [
+      "program_id",
+      "current_plan_id",
+      "current_plan_version",
+      "expected_state_version",
+      "trigger",
+      "constraints"
+    ]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/propose_replan_under_constraints.output.schema.json",
+    "semantics": "Two or three non-activating replan candidates with explicit constraint coverage."
+  },
+  "invocation_condition": {
+    "trusted_role": "role_project_architect",
+    "m4_condition": "contract_only_synthetic",
+    "trigger_source_kind": "synthetic_contract_fixture"
+  },
+  "dependent_tool_system": {
+    "full_operation": ["State MCP", "RAG"],
+    "m4_boundary": "RAG-backed business activation is unavailable; no state-changing tool is called."
+  },
+  "failure_handling": {
+    "invalid_input": "Reject before model or tool invocation.",
+    "no_safe_candidates": "Return an escalation; do not fabricate or weaken constraints.",
+    "activation_requested": "Reject because M4 permits proposal-only output."
+  },
+  "permission_safety": {
+    "allowed_agent": "role_project_architect",
+    "trusted_identity_source": "server-derived runtime principal",
+    "rules": [
+      "Read only the supplied synthetic fixture.",
+      "Never write business state or activate a plan.",
+      "Never infer user facts or override immutable constraints."
+    ]
+  },
+  "reuse_value": [
+    "Bounded project recovery",
+    "Controlled long-running plan adjustment"
+  ]
+}

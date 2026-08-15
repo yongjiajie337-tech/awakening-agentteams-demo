@@ -1,0 +1,110 @@
+{
+  "contract_version": "m4",
+  "registry_version": "1.0.0",
+  "skill_count": 9,
+  "official_field_count": 10,
+  "official_fields": [
+    "skill_name",
+    "type",
+    "scenario",
+    "input_params",
+    "output",
+    "invocation_condition",
+    "dependent_tool_system",
+    "failure_handling",
+    "permission_safety",
+    "reuse_value"
+  ],
+  "skills": [
+    {
+      "skill_name": "analyze_role_gap",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/analyze_role_gap/manifest.json",
+      "input_schema": "schemas/m4/skills/analyze_role_gap.input.schema.json",
+      "output_schema": "schemas/m4/skills/analyze_role_gap.output.schema.json",
+      "allowed_agents": ["role_project_architect"],
+      "m4_activation": "representative_live_call",
+      "fail_closed_reason_code": null
+    },
+    {
+      "skill_name": "design_evidence_project",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/design_evidence_project/manifest.json",
+      "input_schema": "schemas/m4/skills/design_evidence_project.input.schema.json",
+      "output_schema": "schemas/m4/skills/design_evidence_project.output.schema.json",
+      "allowed_agents": ["role_project_architect"],
+      "m4_activation": "contract_only",
+      "fail_closed_reason_code": "M4_RUNTIME_NOT_ACTIVATED"
+    },
+    {
+      "skill_name": "build_versioned_plan",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/build_versioned_plan/manifest.json",
+      "input_schema": "schemas/m4/skills/build_versioned_plan.input.schema.json",
+      "output_schema": "schemas/m4/skills/build_versioned_plan.output.schema.json",
+      "allowed_agents": ["role_project_architect"],
+      "m4_activation": "contract_only",
+      "fail_closed_reason_code": "M4_RUNTIME_NOT_ACTIVATED"
+    },
+    {
+      "skill_name": "coach_task_submission",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/coach_task_submission/manifest.json",
+      "input_schema": "schemas/m4/skills/coach_task_submission.input.schema.json",
+      "output_schema": "schemas/m4/skills/coach_task_submission.output.schema.json",
+      "allowed_agents": ["execution_evidence_coach"],
+      "m4_activation": "representative_live_call",
+      "fail_closed_reason_code": null
+    },
+    {
+      "skill_name": "review_evidence_against_rubric",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/review_evidence_against_rubric/manifest.json",
+      "input_schema": "schemas/m4/skills/review_evidence_against_rubric.input.schema.json",
+      "output_schema": "schemas/m4/skills/review_evidence_against_rubric.output.schema.json",
+      "allowed_agents": ["independent_quality_reviewer"],
+      "m4_activation": "contract_smoke_live_call",
+      "fail_closed_reason_code": null
+    },
+    {
+      "skill_name": "propose_replan_under_constraints",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/propose_replan_under_constraints/manifest.json",
+      "input_schema": "schemas/m4/skills/propose_replan_under_constraints.input.schema.json",
+      "output_schema": "schemas/m4/skills/propose_replan_under_constraints.output.schema.json",
+      "allowed_agents": ["role_project_architect"],
+      "m4_activation": "contract_only",
+      "fail_closed_reason_code": "M4_RUNTIME_NOT_ACTIVATED"
+    },
+    {
+      "skill_name": "apply_authorized_change",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/apply_authorized_change/manifest.json",
+      "input_schema": "schemas/m4/skills/apply_authorized_change.input.schema.json",
+      "output_schema": "schemas/m4/skills/apply_authorized_change.output.schema.json",
+      "allowed_agents": ["awakening_program_manager"],
+      "m4_activation": "deny_only",
+      "fail_closed_reason_code": "M4_APPLY_DISABLED"
+    },
+    {
+      "skill_name": "distill_experience_candidate",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/distill_experience_candidate/manifest.json",
+      "input_schema": "schemas/m4/skills/distill_experience_candidate.input.schema.json",
+      "output_schema": "schemas/m4/skills/distill_experience_candidate.output.schema.json",
+      "allowed_agents": ["role_project_architect"],
+      "m4_activation": "deny_only",
+      "fail_closed_reason_code": "M6_EXPERIENCE_STAGING_UNAVAILABLE"
+    },
+    {
+      "skill_name": "generate_evidence_bound_materials",
+      "version": "1.0.0",
+      "manifest": "skills/awakening/generate_evidence_bound_materials/manifest.json",
+      "input_schema": "schemas/m4/skills/generate_evidence_bound_materials.input.schema.json",
+      "output_schema": "schemas/m4/skills/generate_evidence_bound_materials.output.schema.json",
+      "allowed_agents": ["execution_evidence_coach"],
+      "m4_activation": "deny_only",
+      "fail_closed_reason_code": "ACTIVE_CLAIMS_UNAVAILABLE_IN_M4"
+    }
+  ]
+}

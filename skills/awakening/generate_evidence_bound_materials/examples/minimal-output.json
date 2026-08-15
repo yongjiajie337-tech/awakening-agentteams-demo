@@ -1,0 +1,9 @@
+{
+  "status": "refused",
+  "reason_code": "ACTIVE_CLAIMS_UNAVAILABLE_IN_M4",
+  "material_generated": false,
+  "artifact_created": false,
+  "facts_added": false,
+  "source_data_retained": false,
+  "next_action": "defer_until_active_claims_exist"
+}

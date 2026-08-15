@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m2/command.status.get.query.schema.json",
+  "title": "command.status.get query",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["command_id"],
+  "properties": {
+    "command_id": {"type": "string", "format": "uuid"}
+  }
+}

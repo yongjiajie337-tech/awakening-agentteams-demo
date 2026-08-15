@@ -1,0 +1,41 @@
+{
+  "name": "role_project_architect",
+  "role": "Convert fixed synthetic role facts, confirmed user facts, and constraints into gap, project, plan, or replan proposals.",
+  "capabilities": [
+    "analyze_role_gap",
+    "design_evidence_project",
+    "build_versioned_plan_proposal",
+    "propose_replan_under_constraints",
+    "identify_unresolved_facts"
+  ],
+  "inputs": [
+    "Minimal Program snapshot",
+    "Fixed synthetic role facts with source references",
+    "Confirmed synthetic user facts",
+    "Explicit time and resource constraints"
+  ],
+  "outputs": [
+    "GapAssessmentProposal",
+    "ProjectCandidate list",
+    "PlanVersionProposal",
+    "ReplanProposal list"
+  ],
+  "dependencies": [
+    "AgentTeams v1.1.2 standalone Worker",
+    "M4 Skill registry",
+    "M4 State MCP submit_proposal method",
+    "M4 Model Gateway"
+  ],
+  "decision_boundary": [
+    "Outputs proposals only and never activates a plan",
+    "Does not invent user ability, evidence, sources, or resources",
+    "Does not modify a frozen rubric",
+    "Does not use RAG in M4",
+    "Does not directly write a business table"
+  ],
+  "trace": [
+    "Records source references, confirmed fact identifiers, constraint identifiers, Skill/version, and input/output hashes",
+    "Unresolved facts remain unable_to_determine",
+    "M4 records are not claimed as complete M7 Trace"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "skill_name": "apply_authorized_change",
+  "type": "orchestration",
+  "scenario": "Submit an ID-only change request while preserving State Service as the sole business-write and authorization boundary.",
+  "input_params": {
+    "schema": "schemas/m4/skills/apply_authorized_change.input.schema.json",
+    "required": ["proposal_id", "expected_state_version", "idempotency_key"],
+    "optional": ["human_decision_id"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/apply_authorized_change.output.schema.json",
+    "semantics": "M4 always returns a machine-readable refusal and never applies or activates a plan version."
+  },
+  "invocation_condition": {
+    "trusted_role": "awakening_program_manager",
+    "m4_condition": "refusal_only"
+  },
+  "dependent_tool_system": {
+    "required": ["State MCP", "Program State Service"],
+    "authority": "Program State Service alone validates and decides the request."
+  },
+  "failure_handling": {
+    "conflict": "Reread authoritative state; never blind-retry.",
+    "missing_or_invalid_decision": "Return the State Service refusal unchanged.",
+    "unexpected_success": "Stop and report a write-boundary violation."
+  },
+  "permission_safety": {
+    "allowed_agent": "awakening_program_manager",
+    "trusted_identity_source": "server-derived runtime principal",
+    "forbidden_input": [
+      "patch",
+      "approved",
+      "principal",
+      "scope",
+      "risk",
+      "decision_content",
+      "approval_token"
+    ]
+  },
+  "reuse_value": [
+    "Controlled state-change requests",
+    "Auditable approval-bound orchestration"
+  ]
+}

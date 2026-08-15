@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/model-budget-reservation.schema.json",
+  "title": "M4 ModelBudgetReservation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reservation_id",
+    "program_id",
+    "run_id",
+    "model_call_id",
+    "snapshot_id",
+    "max_input_tokens",
+    "max_output_tokens",
+    "max_cost_microunits",
+    "status",
+    "reservation_version",
+    "refusal_reason_code",
+    "provider_usage_receipt_id",
+    "usage_ledger_id",
+    "charged_input_tokens",
+    "charged_output_tokens",
+    "charged_cost_microunits",
+    "requested_by_principal_id",
+    "created_at",
+    "settled_at"
+  ],
+  "properties": {
+    "reservation_id": {"type": "string", "format": "uuid"},
+    "program_id": {"type": "string", "format": "uuid"},
+    "run_id": {"type": "string", "format": "uuid"},
+    "model_call_id": {"type": "string", "format": "uuid"},
+    "snapshot_id": {"type": "string", "format": "uuid"},
+    "max_input_tokens": {"type": "integer", "minimum": 1},
+    "max_output_tokens": {"type": "integer", "minimum": 1},
+    "max_cost_microunits": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["reserved", "settled", "conservative_settled", "refused"]},
+    "reservation_version": {"type": "integer", "minimum": 1, "maximum": 2},
+    "refusal_reason_code": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
+    },
+    "provider_usage_receipt_id": {"type": ["string", "null"], "format": "uuid"},
+    "usage_ledger_id": {"type": ["string", "null"], "format": "uuid"},
+    "charged_input_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "charged_output_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "charged_cost_microunits": {"type": ["integer", "null"], "minimum": 0},
+    "requested_by_principal_id": {"type": "string", "minLength": 1, "maxLength": 255},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "settled_at": {"type": ["string", "null"], "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "reserved"}}},
+      "then": {
+        "properties": {
+          "reservation_version": {"const": 1},
+          "refusal_reason_code": {"type": "null"},
+          "provider_usage_receipt_id": {"type": "null"},
+          "usage_ledger_id": {"type": "null"},
+          "charged_input_tokens": {"type": "null"},
+          "charged_output_tokens": {"type": "null"},
+          "charged_cost_microunits": {"type": "null"},
+          "settled_at": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "refused"}}},
+      "then": {
+        "properties": {
+          "reservation_version": {"const": 1},
+          "refusal_reason_code": {"type": "string"},
+          "provider_usage_receipt_id": {"type": "null"},
+          "usage_ledger_id": {"type": "null"},
+          "charged_input_tokens": {"type": "null"},
+          "charged_output_tokens": {"type": "null"},
+          "charged_cost_microunits": {"type": "null"},
+          "settled_at": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {"enum": ["settled", "conservative_settled"]}
+        }
+      },
+      "then": {
+        "properties": {
+          "reservation_version": {"const": 2},
+          "refusal_reason_code": {"type": "null"},
+          "provider_usage_receipt_id": {"type": "string"},
+          "usage_ledger_id": {"type": "string"},
+          "charged_input_tokens": {"type": "integer"},
+          "charged_output_tokens": {"type": "integer"},
+          "charged_cost_microunits": {"type": "integer"},
+          "settled_at": {"type": "string"}
+        }
+      }
+    }
+  ]
+}

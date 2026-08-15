@@ -1,0 +1,27 @@
+{
+  "skill_name": "design_evidence_project",
+  "type": "planning",
+  "scenario": "Turn an evidence-bound synthetic gap assessment into exactly two feasible project candidates.",
+  "input_params": {
+    "schema": "schemas/m4/skills/design_evidence_project.input.schema.json",
+    "required": ["program_id", "base_state_version", "gap_refs", "constraints", "allowed_tools", "rubric_ref"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/design_evidence_project.output.schema.json",
+    "business_effect": "proposal_only"
+  },
+  "invocation_condition": "Only role_project_architect after a Schema-valid gap assessment; contract-only in M4.",
+  "dependent_tool_system": ["M4 Skill registry", "fixed synthetic inputs"],
+  "failure_handling": {
+    "mode": "fail_closed",
+    "conditions": ["schema_invalid", "two_feasible_candidates_unavailable", "m4_runtime_not_activated"],
+    "fallback": "no_candidates"
+  },
+  "permission_safety": {
+    "allowed_agent": "role_project_architect",
+    "direct_business_write": false,
+    "activation_allowed": false,
+    "rag_enabled_in_m4": false
+  },
+  "reuse_value": "Reusable two-candidate project design contract for constrained programs."
+}

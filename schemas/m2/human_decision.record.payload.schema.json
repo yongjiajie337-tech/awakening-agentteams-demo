@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m2/human_decision.record.payload.schema.json",
+  "title": "human_decision.record payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["approval_request_id", "decision"],
+  "properties": {
+    "approval_request_id": {"type": "string", "format": "uuid"},
+    "decision": {"enum": ["approve", "reject"]},
+    "comment": {"type": "string", "minLength": 1, "maxLength": 2000}
+  }
+}

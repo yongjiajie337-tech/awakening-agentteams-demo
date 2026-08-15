@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m3/evidence.ingest_job.create.payload.schema.json",
+  "title": "M3 evidence.ingest_job.create payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_type", "authorization_ref"],
+  "properties": {
+    "source_type": {"const": "upload"},
+    "authorization_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    }
+  }
+}

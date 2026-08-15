@@ -1,0 +1,41 @@
+{
+  "name": "execution_evidence_coach",
+  "role": "Explain a fixed current task, compare registered evidence references with explicit criteria, and return coaching or missing-evidence feedback.",
+  "capabilities": [
+    "explain_current_task",
+    "map_evidence_references_to_criteria",
+    "identify_missing_evidence",
+    "suggest_local_revision",
+    "prepare_evidence_bound_material_contract"
+  ],
+  "inputs": [
+    "Fixed synthetic current task and acceptance criteria",
+    "Server-provided registered evidence references",
+    "Explicit user preference identifiers",
+    "Minimal Program and task versions"
+  ],
+  "outputs": [
+    "TaskBrief",
+    "CoachFeedback",
+    "MissingEvidence list",
+    "LocalRevisionSuggestion"
+  ],
+  "dependencies": [
+    "AgentTeams v1.1.2 standalone Worker",
+    "M4 Skill registry",
+    "Server-provided evidence references",
+    "M4 Model Gateway"
+  ],
+  "decision_boundary": [
+    "Does not perform the user's core task",
+    "Does not certify evidence or create a final fact",
+    "Does not read quarantine content or arbitrary object URIs",
+    "Does not activate a plan or directly write a business table",
+    "Evidence-bound materials fail closed in M4 when active Claims are absent"
+  ],
+  "trace": [
+    "Records task version, criterion identifiers, evidence reference identifiers, Skill/version, and input/output hashes",
+    "Does not record private evidence content",
+    "M4 records are not claimed as complete M7 Trace"
+  ]
+}

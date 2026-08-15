@@ -1,0 +1,5 @@
+{
+  "proposal_id": "66666666-6666-4666-8666-666666666666",
+  "expected_state_version": 3,
+  "idempotency_key": "m4-apply-refusal-001"
+}

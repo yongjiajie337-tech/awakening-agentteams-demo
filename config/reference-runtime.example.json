@@ -1,0 +1,50 @@
+{
+  "schema_version": "awakening.agentteams.demo.reference-profile.v1",
+  "example_only": true,
+  "consumed_automatically": false,
+  "reference_workspace": "<ABSOLUTE_PATH_TO_PREPARED_REFERENCE_WORKSPACE>",
+  "compatibility": {
+    "operating_system": "Windows",
+    "powershell": "5.1",
+    "python": "3.12",
+    "agentteams": "v1.1.2",
+    "topology": {
+      "manager": 1,
+      "workers": 3,
+      "worker_roles": [
+        "role_project_architect",
+        "execution_evidence_coach",
+        "independent_quality_reviewer"
+      ]
+    }
+  },
+  "execution_policy": {
+    "fresh_demo_task_required": true,
+    "manager_model_calls": 0,
+    "worker_provider_calls_max": 3,
+    "provider_calls_run_concurrently": true,
+    "provider_retries": 0,
+    "hidden_retries": 0,
+    "cost_ceiling_cny_per_worker": 10,
+    "cost_ceiling_cny_total": 30
+  },
+  "credential_boundary": {
+    "credential_included_in_package": false,
+    "credential_value_in_config": false,
+    "credential_source": "existing_protected_reference_environment_only",
+    "credential_copied_by_entrypoint": false
+  },
+  "effects": {
+    "preflight_uses_network_transport_probe": true,
+    "preflight_reads_docker_state": true,
+    "preflight_reads_secret_metadata_only": true,
+    "live_changes_reference_runtime_state": true,
+    "all_public_live_steps_require_protected_secret_acknowledgement": true,
+    "start_infrastructure_reads_internal_runtime_credentials": true,
+    "await_human_request_reads_matrix_token_in_container": true,
+    "start_live_gateway_reads_provider_secret": true,
+    "stop_restore_may_read_internal_runtime_credentials": true,
+    "live_writes_matrix_events": true,
+    "run_chain_may_call_provider": true
+  }
+}

@@ -1,0 +1,27 @@
+apiVersion: hiclaw.io/v1beta1
+kind: Worker
+metadata:
+  name: independent-quality-reviewer
+spec:
+  workerName: independent_quality_reviewer
+  model: qwen3.7-flash-2026-07-15
+  runtime: openclaw
+  image: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/hiclaw-worker@sha256:d1078b42115ec2ea4eeaac507bc63352812291ff6e2406e813863161f074fb0b
+  containerManaged: false
+  state: Running
+  identity: |
+    Name: independent_quality_reviewer
+    Role: Perform only the fixed synthetic M4 contract smoke review.
+    Decision boundary: This is not M5 business evaluation, approval, or expert endorsement.
+  soul: |
+    Be independent from Architect and Coach output, conservative about unknowns, and schema-bound.
+  agents: |
+    Use only review_evidence_against_rubric on the sealed synthetic contract_smoke input.
+    Do not call shell, MCP, State, network, filesystem, or any other tool.
+    The trusted M4 Gateway rejects any request containing a tool declaration.
+    Return only the registered review output schema. Set business_evaluation=false
+    and verified_claim_created=false, and include both required limitations:
+    not_business_evaluation and m5_review_dispatch_gate_not_implemented.
+  skills: []
+  mcpServers: []
+  package: file:///data/m4-packages-v2/independent-quality-reviewer.zip

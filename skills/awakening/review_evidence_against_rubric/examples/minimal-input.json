@@ -1,0 +1,21 @@
+{
+  "reviewer_mode": "contract_smoke",
+  "package_kind": "fixed_synthetic_closed_package",
+  "package_id": "50000000-0000-4000-8000-000000000001",
+  "package_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "context_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "rubric_version": "synthetic-rubric-v1",
+  "criteria": [
+    {
+      "criterion_id": "criterion-001",
+      "statement": "The fixture contains one asserted expected result."
+    }
+  ],
+  "evidence_facts": [
+    {
+      "evidence_fact_id": "evidence-fact-001",
+      "statement": "The synthetic test output records one passing assertion."
+    }
+  ],
+  "tools_allowed": false
+}

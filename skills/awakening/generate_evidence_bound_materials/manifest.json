@@ -1,0 +1,41 @@
+{
+  "skill_name": "generate_evidence_bound_materials",
+  "type": "generation",
+  "scenario": "Generate portfolio, resume, or interview material only from State Service-confirmed active Claims and an approved template.",
+  "input_params": {
+    "schema": "schemas/m4/skills/generate_evidence_bound_materials.input.schema.json",
+    "required": ["program_id", "material_type", "template_ref", "active_claim_refs"]
+  },
+  "output": {
+    "schema": "schemas/m4/skills/generate_evidence_bound_materials.output.schema.json",
+    "semantics": "M4 returns a fixed prerequisite refusal and produces no content or artifact."
+  },
+  "invocation_condition": {
+    "trusted_role": "execution_evidence_coach",
+    "full_condition": "State Service confirms every referenced Claim is active and final.",
+    "m4_condition": "fail_closed_missing_active_claims"
+  },
+  "dependent_tool_system": {
+    "full_operation": ["State MCP active-Claim readback", "Bounded document generator"],
+    "m4_boundary": "No active-Claims readback exists, so no model, template, or generator call is allowed."
+  },
+  "failure_handling": {
+    "missing_or_inactive_claim": "Block the complete request; never fill or infer the gap.",
+    "unavailable_authoritative_readback": "Refuse before model or tool invocation.",
+    "generator_failure": "Create no partial artifact or unsupported material."
+  },
+  "permission_safety": {
+    "allowed_agent": "execution_evidence_coach",
+    "trusted_identity_source": "server-derived runtime principal",
+    "rules": [
+      "Request-body Claim IDs are never proof of active status.",
+      "Never introduce a new experience, number, result, or causal claim.",
+      "Never generate or retain material in M4."
+    ]
+  },
+  "reuse_value": [
+    "Evidence-backed portfolio material",
+    "Evidence-backed resume bullets",
+    "Evidence-backed interview stories"
+  ]
+}

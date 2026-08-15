@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/skills/apply_authorized_change.output.schema.json",
+  "title": "apply_authorized_change M4 refusal output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proposal_id",
+    "request_status",
+    "applied",
+    "active_state_changed",
+    "state_version_unchanged",
+    "reason_code",
+    "next_action"
+  ],
+  "properties": {
+    "proposal_id": {"type": "string", "format": "uuid"},
+    "request_status": {"const": "rejected"},
+    "applied": {"const": false},
+    "active_state_changed": {"const": false},
+    "state_version_unchanged": {"const": true},
+    "reason_code": {
+      "enum": [
+        "M4_APPLY_DISABLED",
+        "APPROVAL_REQUIRED",
+        "STATE_VERSION_CONFLICT",
+        "DECISION_BINDING_INVALID",
+        "PERMISSION_DENIED"
+      ]
+    },
+    "next_action": {
+      "enum": ["stop", "reread_state", "request_human_decision"]
+    }
+  }
+}

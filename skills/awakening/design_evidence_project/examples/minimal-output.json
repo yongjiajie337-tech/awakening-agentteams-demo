@@ -1,0 +1,26 @@
+{
+  "proposal_type": "project_candidates",
+  "program_id": "10000000-0000-4000-8000-000000000001",
+  "base_state_version": 1,
+  "candidates": [
+    {
+      "candidate_id": "project-a",
+      "title": "Deterministic agent workflow test harness",
+      "gap_refs": ["gap-001"],
+      "deliverables": ["Test harness", "Failure report"],
+      "evidence_targets": ["Source code", "Test output"],
+      "estimated_hours": 16,
+      "risk": "low"
+    },
+    {
+      "candidate_id": "project-b",
+      "title": "Agent output evaluation fixture suite",
+      "gap_refs": ["gap-001"],
+      "deliverables": ["Fixture set", "Evaluation script"],
+      "evidence_targets": ["Fixture hashes", "Evaluation output"],
+      "estimated_hours": 18,
+      "risk": "medium"
+    }
+  ],
+  "activation_allowed": false
+}

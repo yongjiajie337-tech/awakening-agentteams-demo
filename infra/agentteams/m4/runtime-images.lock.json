@@ -1,0 +1,42 @@
+{
+  "contract_version": "m4",
+  "agentteams_version": "v1.1.2",
+  "platform": {
+    "os": "linux",
+    "architecture": "amd64"
+  },
+  "images": {
+    "manager": {
+      "tag": "higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/hiclaw-manager:v1.1.2",
+      "pull_reference": "higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/hiclaw-manager@sha256:3a77482fb11472ab05f85ba5d60cbc0df8d66046aa9f63b9cf99f16d87852921",
+      "platform_digest": "sha256:3a77482fb11472ab05f85ba5d60cbc0df8d66046aa9f63b9cf99f16d87852921",
+      "config_digest": "sha256:07d996ad9fd75fa8e5d428c85d32894504c1f3c2451dd8a39f938fb9adea2aac",
+      "local_image_id": "sha256:3a77482fb11472ab05f85ba5d60cbc0df8d66046aa9f63b9cf99f16d87852921",
+      "local_size_bytes": 1116301804,
+      "working_dir": "/root/manager-workspace",
+      "entrypoint": [
+        "/opt/hiclaw/scripts/init/start-manager-agent.sh"
+      ]
+    },
+    "worker": {
+      "tag": "higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/hiclaw-worker:v1.1.2",
+      "pull_reference": "higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/hiclaw-worker@sha256:d1078b42115ec2ea4eeaac507bc63352812291ff6e2406e813863161f074fb0b",
+      "platform_digest": "sha256:d1078b42115ec2ea4eeaac507bc63352812291ff6e2406e813863161f074fb0b",
+      "config_digest": "sha256:f3b7b8d58c0a2bf3d7369c146484e60c7ebe68bc939e4821aad6ade555bf0673",
+      "local_image_id": "sha256:d1078b42115ec2ea4eeaac507bc63352812291ff6e2406e813863161f074fb0b",
+      "local_size_bytes": 1116000496,
+      "working_dir": "/root/hiclaw-fs",
+      "entrypoint": [
+        "/opt/hiclaw/scripts/worker-entrypoint.sh"
+      ]
+    }
+  },
+  "supply_chain_rules": {
+    "allow_tags_at_runtime": false,
+    "allow_latest": false,
+    "allow_installer": false,
+    "require_exact_platform_digest": true,
+    "require_local_image_id_match": true
+  },
+  "evidence": "artifacts/m4/M4_RUNTIME_IMAGES_ATTEMPT_1.md"
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awakening.local/schemas/m4/skills/generate_evidence_bound_materials.input.schema.json",
+  "title": "generate_evidence_bound_materials input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["program_id", "material_type", "template_ref", "active_claim_refs"],
+  "properties": {
+    "program_id": {"type": "string", "format": "uuid"},
+    "material_type": {"enum": ["portfolio_summary", "resume_bullet", "interview_story"]},
+    "template_ref": {"type": "string", "format": "uuid"},
+    "active_claim_refs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "format": "uuid"}
+    }
+  }
+}
