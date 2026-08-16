@@ -41,32 +41,18 @@ flowchart LR
     H["Human / Admin<br/>Demo operator, not an Agent"]
     MR["Manager control room<br/>Manager: default<br/>not a combined inbox"]
     M["Manager<br/>deterministic policy / contract control plane<br/>0 model calls"]
-
-    AR["Architect room"]
-    CR["Coach room"]
-    RR["Reviewer room"]
-
-    A["Architect Worker"]
-    C["Coach Worker"]
-    R["Reviewer Worker<br/>contract smoke"]
+    AR["Architect room<br/>Manager + Architect Worker"]
+    CR["Coach room<br/>Manager + Coach Worker"]
+    RR["Reviewer room<br/>Manager + Reviewer Worker<br/>contract smoke"]
 
     H <-->|"submit request / observe stages"| MR
-    M --- MR
-
+    MR <-->|"control-room messages"| M
     M <-->|"task / response"| AR
     M <-->|"task / response"| CR
     M <-->|"task / response"| RR
-
-    A --- AR
-    C --- CR
-    R --- RR
-
-    H -.->|"visible to the observer in the recorded instance"| AR
-    H -.->|"visible to the observer in the recorded instance"| CR
-    H -.->|"visible to the observer in the recorded instance"| RR
 ```
 
-Solid lines show the Demo's core communication relationships. Dashed lines into the Worker rooms show the Human/Admin visibility observed in the recorded instance; they must not be generalized into a universal membership-count guarantee for every AgentTeams deployment.
+The diagram shows only the Demo's core communication relationships. Human/Admin could also see Worker rooms in the recorded UI, but that is an observation rather than a code-level membership guarantee for every deployment; see “How to interpret the UI's 2-person and 3-person badges” below.
 
 The most important point is:
 

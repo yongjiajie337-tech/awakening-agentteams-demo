@@ -41,32 +41,18 @@ flowchart LR
     H["Human / Admin<br/>演示者，不是 Agent"]
     MR["Manager 控制房<br/>Manager: default<br/>不是总收件箱"]
     M["Manager<br/>确定性策略 / 契约控制面<br/>模型调用 0"]
-
-    AR["Architect 独立房间"]
-    CR["Coach 独立房间"]
-    RR["Reviewer 独立房间"]
-
-    A["Architect Worker"]
-    C["Coach Worker"]
-    R["Reviewer Worker<br/>contract smoke"]
+    AR["Architect 独立房间<br/>Manager + Architect Worker"]
+    CR["Coach 独立房间<br/>Manager + Coach Worker"]
+    RR["Reviewer 独立房间<br/>Manager + Reviewer Worker<br/>contract smoke"]
 
     H <-->|"提交请求 / 查看阶段"| MR
-    M --- MR
-
+    MR <-->|"控制房消息"| M
     M <-->|"任务 / 回复"| AR
     M <-->|"任务 / 回复"| CR
     M <-->|"任务 / 回复"| RR
-
-    A --- AR
-    C --- CR
-    R --- RR
-
-    H -.->|"录屏实例中作为观察者可见"| AR
-    H -.->|"录屏实例中作为观察者可见"| CR
-    H -.->|"录屏实例中作为观察者可见"| RR
 ```
 
-实线表示本 Demo 的核心通信关系。指向 Worker 房间的虚线表示录屏实例中观察到的 Human/Admin 可见关系；它不应被扩大为所有 AgentTeams 部署的通用成员数保证。
+图中只画本 Demo 的核心通信关系。录屏实例里 Human/Admin 也能看到 Worker 房间，但这是 UI 观察，不是代码对所有部署作出的成员数保证；准确边界见下方“如何理解界面上的 2 人和 3 人”。
 
 最重要的一点是：
 

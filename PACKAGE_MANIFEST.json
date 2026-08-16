@@ -175,13 +175,13 @@
     },
     {
       "path": "docs/JUDGE_GUIDE.en.md",
-      "size_bytes": 14153,
-      "sha256": "7dc89519a500028f924d37ee1e3f3d352303928d04c08f69bbf0348abd374448"
+      "size_bytes": 13977,
+      "sha256": "4a0d29ab05e9b84c3d7187bbe37bf4329ae327fdeef899af6507fb7fcf7c1309"
     },
     {
       "path": "docs/JUDGE_GUIDE.md",
-      "size_bytes": 12531,
-      "sha256": "79785961ac64d7340fe38a8a0afae13fcaf43085e221c348650bdb1833b73861"
+      "size_bytes": 12400,
+      "sha256": "8e0e15bce9ee6c444ed75f9dfeec8d5da6e75db5186bc2a36787c01cb65eb9a1"
     },
     {
       "path": "docs/REFERENCE_ENVIRONMENT.md",
