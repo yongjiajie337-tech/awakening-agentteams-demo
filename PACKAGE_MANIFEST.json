@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "package_name": "awakening-agentteams-demo",
-  "package_version": "1.0.3",
+  "package_version": "1.0.4",
   "profile": "dual-layer-sanitized-review",
   "agentteams_reference_version": "v1.1.2",
   "offline_unit_test_count": 97,
   "evidence_run_count": 2,
-  "payload_file_count": 259,
+  "payload_file_count": 263,
   "files": [
     {
       "path": ".editorconfig",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 3836,
-      "sha256": "cb4234fac26b4e2001ee41d5656346f405f3909e315cd9c3d1df6c16abac446c"
+      "size_bytes": 4525,
+      "sha256": "9e85104dfce4f04e30b34542905bcc0d9fcf79e430578ec6067f7b5e390729b2"
     },
     {
       "path": "CITATION.cff",
@@ -170,8 +170,18 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "size_bytes": 12180,
-      "sha256": "297d2dee6cb88a20fe7bcf813c698b0f9dce9242ad261703bb0fa060d5d69d16"
+      "size_bytes": 12375,
+      "sha256": "04808a8dd5cae24fbcc29a94fce29f044647215f47e3162c3ba025ead498c7a8"
+    },
+    {
+      "path": "docs/JUDGE_GUIDE.en.md",
+      "size_bytes": 13977,
+      "sha256": "4a0d29ab05e9b84c3d7187bbe37bf4329ae327fdeef899af6507fb7fcf7c1309"
+    },
+    {
+      "path": "docs/JUDGE_GUIDE.md",
+      "size_bytes": 12400,
+      "sha256": "8e0e15bce9ee6c444ed75f9dfeec8d5da6e75db5186bc2a36787c01cb65eb9a1"
     },
     {
       "path": "docs/REFERENCE_ENVIRONMENT.md",
@@ -182,6 +192,16 @@
       "path": "docs/SECURITY_MODEL.md",
       "size_bytes": 22373,
       "sha256": "1f69bdef253679f465b89f34197aa1da29e9cc830c381edffb319ffb4e1a8228"
+    },
+    {
+      "path": "docs/SKILLS_OVERVIEW.en.md",
+      "size_bytes": 11910,
+      "sha256": "ef210872217aefa83b78626688b387e62ec6ac1d6986a5b3b7a69be2f9546c76"
+    },
+    {
+      "path": "docs/SKILLS_OVERVIEW.md",
+      "size_bytes": 11061,
+      "sha256": "5ed1a735aeb4dc9bfb67b577085ed2a89b96dd274215c953839f36fd8f8b2333"
     },
     {
       "path": "docs/TROUBLESHOOTING.md",
@@ -376,7 +396,7 @@
     {
       "path": "pyproject.toml",
       "size_bytes": 1401,
-      "sha256": "cb504b67e1d4b2444b5ef6fc8c2bc8f243e3c8695946aa2bdad62b127d3cbf38"
+      "sha256": "5a4f34bb7c2f76e0ef1af8b85aeac3b110a8c50cce883f6915e8c5d63248a7cc"
     },
     {
       "path": "QUICKSTART_WINDOWS.md",
@@ -385,13 +405,13 @@
     },
     {
       "path": "README.en.md",
-      "size_bytes": 12391,
-      "sha256": "14f587a18ffb38f3f47712888779575e39f2d7810e6ac4d265ab4f042f6d2a7d"
+      "size_bytes": 14233,
+      "sha256": "b0f71437625beff9abcc25ec2278e0cd26502e8c371abf5301462e2c6e6e1116"
     },
     {
       "path": "README.md",
-      "size_bytes": 17776,
-      "sha256": "db2e7836e40de72fb4f77f95247555efb591226d8ec6bb12ea7be5b8cfcd3d9a"
+      "size_bytes": 19546,
+      "sha256": "303b36f6212bd679caf67e5470902223c39bcc55c19a8e3892f7f02efafdda6f"
     },
     {
       "path": "requirements-demo.lock",
@@ -725,8 +745,8 @@
     },
     {
       "path": "scripts/package/verify_package.py",
-      "size_bytes": 43415,
-      "sha256": "30bfcb51ccdb051e49951c7a6be9b797ae891745afac4e9da83c5e6234284679"
+      "size_bytes": 43537,
+      "sha256": "f8a8f2d1b284661e1426ac3d5fe10720c59e7f4434699225b4c5e5114192bcc6"
     },
     {
       "path": "SECURITY.md",
@@ -1210,8 +1230,8 @@
     },
     {
       "path": "tests/unit/demo/test_offline_verify_contract.py",
-      "size_bytes": 16238,
-      "sha256": "24fcbc899db8fc3580f37f298117a240da451d88c215f537be245825a941d3e8"
+      "size_bytes": 16392,
+      "sha256": "4b449e8db022c1487747fa339a86c6b9501e6593144768f00c8b3437f20bec02"
     },
     {
       "path": "tests/unit/demo/test_packaged_runtime_helpers.py",
@@ -1301,7 +1321,7 @@
     {
       "path": "VERSION",
       "size_bytes": 6,
-      "sha256": "f5e5c9534532840fcd45bb002e69ed85c61dba2753450e26b448b7df1481e24d"
+      "sha256": "d1b77b88f4b9f675a900e4143ac768a21218623cfe1703ca43162388c3271bd6"
     }
   ]
 }

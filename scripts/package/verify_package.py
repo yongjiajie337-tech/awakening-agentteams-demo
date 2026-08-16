@@ -18,7 +18,7 @@ import sys
 
 
 PACKAGE_NAME = "awakening-agentteams-demo"
-PACKAGE_VERSION = "1.0.3"
+PACKAGE_VERSION = "1.0.4"
 OFFLINE_UNIT_TEST_COUNT = 97
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 UUID_RE = re.compile(
@@ -39,6 +39,10 @@ REQUIRED_PATHS = (
     "EVIDENCE.md",
     "SECURITY.md",
     "SECURITY_AND_SECRETS.md",
+    "docs/JUDGE_GUIDE.md",
+    "docs/JUDGE_GUIDE.en.md",
+    "docs/SKILLS_OVERVIEW.md",
+    "docs/SKILLS_OVERVIEW.en.md",
     "docs/SECURITY_MODEL.md",
     "CONTRIBUTING.md",
     "CODE_OF_CONDUCT.md",

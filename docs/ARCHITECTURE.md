@@ -4,6 +4,8 @@
 
 Awakening Demo 使用 AgentTeams 的 Manager/Worker 拓扑，由确定性的 Manager 策略/契约控制面把一份固定 synthetic job package 同时交给三个已注册角色，由三个 Worker 生成结构化结果，再按固定规则汇总，并通过 Matrix/Element 把阶段流转展示给人。该 Demo 不支持模型自主路由或 LLM planner。
 
+面向第一次接触 AgentTeams 的评委，建议先读 [多 Agent 3 分钟导览](JUDGE_GUIDE.md) 和 [9 个 Skill 一页总览](SKILLS_OVERVIEW.md)；本页保留更完整的技术边界。
+
 ## 角色
 
 | 角色 | 标识 | 责任 | 是否调用模型 |

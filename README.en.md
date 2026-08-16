@@ -13,6 +13,28 @@ The scenario is a fictional job-seeker evidence workflow. The Architect identifi
 
 > Scope boundary: this is a competition Demo and reproduction package. It is not M5 acceptance evidence, a production deployment, or a zero-configuration AgentTeams installer.
 
+## 60-second judge tour
+
+If you only open four pages, use this order:
+
+| Time | Open | Question answered |
+|---:|---|---|
+| 20 s | [Plain-language multi-agent guide](docs/JUDGE_GUIDE.en.md) | Why this is not one four-agent group chat, and what each room shows |
+| 20 s | [Nine-Skill overview](docs/SKILLS_OVERVIEW.en.md) | What each Skill does and why the accurate scope is `3 live + 3 contract_only + 3 deny_only` |
+| 10 s | [Run B evidence](EVIDENCE.md#run-b最终录屏对应运行) | How 3/3 Workers, three Provider calls, and eight Manager-room Matrix stage projections are evidenced |
+| 10 s | [Three Run B canonical Worker outputs](evidence/run-b/outputs/) | What the three distinct roles actually returned |
+
+In one sentence: `Manager: default` is a Human/Admin-to-Manager control room, not an inbox that automatically contains every Manager conversation. The Manager dispatches separately through three Worker rooms; complete structured Worker replies remain on their own paths, while the Manager room mainly displays dispatch, completion, and a `summary-completed` status/result-hash projection. The deterministic full aggregate is stored in `result.json`; the Demo does not generate a separate human-readable synthesis.
+
+```mermaid
+flowchart LR
+    H["Human / Admin"] <-->|"request / stages"| MR["Manager control room<br/>Manager: default"]
+    MR --- M["Manager<br/>deterministic control plane<br/>0 model calls"]
+    M <-->|"task / response"| A["Architect room"]
+    M <-->|"task / response"| C["Coach room"]
+    M <-->|"task / response"| R["Reviewer room<br/>contract smoke"]
+```
+
 ## What is real, and what is not claimed
 
 | Topic | Accurate repository claim |
@@ -46,7 +68,7 @@ deterministic summary + Matrix/Element event flow + evidence hashes
 
 The Manager uses a frozen role-to-Skill mapping, creates three task packages, dispatches the Workers concurrently, validates and correlates the results, and emits a fixed summary. It does **not** ask a model which Worker to select, which tool to call, or how to revise the plan.
 
-The three Workers communicate with the Manager through separate rooms. They do not need to be placed in one four-party group chat. The Manager room primarily shows lifecycle events and summary messages, while each Worker room retains that Worker's structured request and response. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+The three Workers communicate with the Manager through separate rooms. They do not need to be placed in one four-party group chat. The Manager room primarily shows lifecycle projections, including a `summary-completed` status/result hash, while each Worker room retains that Worker's structured request and response. The deterministic aggregate is stored in `result.json`, not authored as a human-readable synthesis. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Reviewer boundary
 
@@ -67,7 +89,7 @@ The repository includes sanitized projections from two successful Demo runs:
 - **Run A:** 3/3 Workers succeeded; 3 successful Worker Provider calls; 0 Manager model calls; locally calculated cost `CNY 0.007176`.
 - **Run B:** 3/3 Workers succeeded; 3 successful Worker Provider calls; 0 Manager model calls; locally calculated cost `CNY 0.005740`.
 
-Each run has eight Matrix stage events: `request-accepted ×1`, `worker-dispatched ×3`, `worker-completed ×3`, and `summary-completed ×1`. Both runs recorded a process-local maximum of three in-flight Provider calls and no retry. The public projection does not include per-call timestamps, so a third party can verify that the recorded value is hash-bound but cannot independently replay timing and derive that peak from the projection alone.
+Each run has eight Manager-control-room Matrix stage projections: `request-accepted ×1`, `worker-dispatched ×3`, `worker-completed ×3`, and `summary-completed ×1`. This count excludes the original Human request and Worker-room tasks/responses. Both runs recorded a process-local maximum of three in-flight Provider calls and no retry. The public projection does not include per-call timestamps, so a third party can verify the projection's internal hash consistency but cannot independently replay timing and derive that peak from the projection alone.
 
 Each `evidence/run-*/outputs/` directory contains three canonical Worker outputs extracted from the frozen result. Offline verification canonicalizes them again, compares their SHA-256 values with `provider-events.jsonl`, and validates them against the corresponding output Schemas. The raw Provider transport package, complete prompts, unrelated Matrix history, and remote billing data are not distributed.
 

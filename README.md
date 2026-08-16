@@ -12,6 +12,28 @@
 
 > 重要边界：这是竞赛 Demo 与复现材料，不是 M5 模块验收证据；它也不宣称可在任意裸机上零配置一键部署 AgentTeams。
 
+## 评委 60 秒导览
+
+如果只看四个入口，请按这个顺序：
+
+| 用时 | 先看什么 | 立即能回答的问题 |
+|---:|---|---|
+| 20 秒 | [多 Agent 3 分钟导览](docs/JUDGE_GUIDE.md) | 为什么不是四 Agent 群聊、Manager 房和 Worker 房分别显示什么 |
+| 20 秒 | [9 个 Skill 一页总览](docs/SKILLS_OVERVIEW.md) | 9 个 Skill 分别做什么，为什么准确口径是 `3 live + 3 contract_only + 3 deny_only` |
+| 10 秒 | [Run B 成功证据](EVIDENCE.md#run-b最终录屏对应运行) | 3/3 Worker、3 次 Provider 调用、8 条 Manager 控制房阶段投影如何被证明 |
+| 10 秒 | [Run B 三份 canonical Worker 输出](evidence/run-b/outputs/) | 三个不同角色实际返回了什么结构化结果 |
+
+一句话理解协作方式：`Manager: default` 只是 Human/Admin 与 Manager 交互的控制房间，不是 Manager 所有对话的总收件箱。Manager 分别通过三个独立 Worker 房间向 Architect、Coach、Reviewer 派发任务；Worker 的完整结构化回复保留在对应路径，完整三路结果由 `result.json` 确定性聚合，Manager 房主要显示派发、完成和 `summary-completed` 状态/结果哈希投影，并不会另写一段人类可读的综合摘要。
+
+```mermaid
+flowchart LR
+    H["Human / Admin"] <-->|"请求 / 阶段"| MR["Manager 控制房<br/>Manager: default"]
+    MR --- M["Manager<br/>确定性控制面<br/>模型调用 0"]
+    M <-->|"任务 / 回复"| A["Architect 独立房间"]
+    M <-->|"任务 / 回复"| C["Coach 独立房间"]
+    M <-->|"任务 / 回复"| R["Reviewer 独立房间<br/>contract smoke"]
+```
+
 对应赛事页面：[世界人工智能开源大赛 · GOAI Agent Infra 赛道](https://www.goaihz.com/tracks?track=infra)。本包用下表把初赛代码包的五项建议内容逐一落到可检查文件。
 
 ## 先看结论：哪些是真实的，哪些没有声明
@@ -140,7 +162,7 @@ Manager summary + Matrix/Element visible event flow
 - Run A：3/3 Worker 成功；3 次 Provider 调用成功；Manager 模型调用 0；本地计费计算为 ¥0.007176。
 - Run B（最终录屏对应运行）：3/3 Worker 成功；3 次 Provider 调用成功；Manager 模型调用 0；本地计费计算为 ¥0.005740。
 
-两次运行都有 8 条 Matrix 阶段事件：`request-accepted ×1`、`worker-dispatched ×3`、`worker-completed ×3`、`summary-completed ×1`。两次实际观察到的 Provider 峰值在途数均为 `3`，没有重试；Reviewer 结果均为 no-tool contract smoke。Run B 另有 exact 14 条生命周期记录和完整 Stop/Restore 结果。
+两次运行都有 8 条 Manager 控制房 Matrix 阶段投影：`request-accepted ×1`、`worker-dispatched ×3`、`worker-completed ×3`、`summary-completed ×1`。该计数不包含 Human 原始请求，也不包含三个 Worker 房的任务与回复，不是整个 Matrix 实例的消息总数。两次实际观察到的 Provider 峰值在途数均为 `3`，没有重试；Reviewer 结果均为 no-tool contract smoke。Run B 另有 exact 14 条生命周期记录和完整 Stop/Restore 结果。
 
 这些金额是本地按已记录 token 与固定单价计算的结果，**没有通过远端 Provider 账单做独立核验**。详细 ID、哈希和证据限制见 [EVIDENCE.md](EVIDENCE.md)。
 

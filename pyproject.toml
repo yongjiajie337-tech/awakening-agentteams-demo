@@ -1,6 +1,6 @@
 [project]
 name = "awakening-agentteams-demo-review-package"
-version = "1.0.3"
+version = "1.0.4"
 description = "Dual-layer offline review and reference-environment reproduction package for the Awakening AgentTeams Demo"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"

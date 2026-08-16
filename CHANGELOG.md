@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Added a judge-first 60-second navigation block to the Chinese and English landing pages.
+- Added bilingual GitHub-native Mermaid guides that explain the Manager control room, three separate Worker rooms, five-step flow, room visibility, design benefits, and evidence-trace boundaries without turning recorded UI observations into universal AgentTeams guarantees.
+- Added bilingual one-page catalogs for all nine Skills, including plain-language purposes, activation status, design files, schemas, examples, and the six canonical live outputs.
+- Made both judge-facing guides mandatory package payload files and kept the existing two successful run projections unchanged.
+
 ## 1.0.3 - 2026-08-16
 
 - Added a Chinese-first GitHub landing page and a substantive English entry
